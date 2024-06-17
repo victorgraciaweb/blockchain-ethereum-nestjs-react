@@ -6,6 +6,9 @@ import { Header } from './components/header';
 import { ListNetworks } from './components/list_networks';
 import { Home } from './components/home';
 import { AddNetwork } from './components/add_network';
+import { Operations } from './components/operations';
+import { Faucet } from './components/faucet';
+
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -16,6 +19,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/list" element={<ListNetworks />} />
           <Route path="/network" element={<AddNetwork />} />
           <Route path="/network/:id" element={<AddNetwork />} />
+          <Route path="/operations/:id" element={<Operations />}/>
+          <Route path="/faucet/:id" element={<Faucet />} />
+          <Route path="/transfer/:id" element={<Faucet />} />
+          <Route path="/up/:id" element={<Faucet />} />
+          <Route path="/down/:id" element={<Faucet />} />
+          <Route path="/restart/:id" element={<Faucet />} />
+          
       </Routes>
     </BrowserRouter>
 );
