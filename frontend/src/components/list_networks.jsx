@@ -1,6 +1,7 @@
 import React from 'react';
 import { Header } from './header';
 import { Link } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 export function ListNetworks() {
   
@@ -19,15 +20,35 @@ export function ListNetworks() {
     "bootnode":1234
   }
 ];
+
+const handleDelete = (id) => {
+  Swal.fire({
+    title: `Are you sure you want to delete the network with ID: ${id}?`,
+    showDenyButton: true,
+    showCancelButton: false,
+    confirmButtonText: 'Delete',
+    denyButtonText: `Cancel`,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Simula una solicitud al servidor para eliminar la red
+      console.log(`Network ${id} deleted`);
+      //Aqui debemos hacer la petición al servidor y ver lo que nos devuelve 
+      //para saber si hemos podido eliminar o no la network
+      Swal.fire('Deleted!', '', 'success');
+      
+    }
+  });
+};
+
   
   return (
     <div>
       <Header />
-      <div className="mx-2 my-2 container">
+      <div className="mx-3 my-2 container">
         <h1>List Networks</h1>
-        <h6><Link to="/network">Add Network</Link></h6>
+        <h6><Link className="btn btn-primary" to="/network">Add Network</Link></h6>
       </div>
-      <div className="">
+      <div className="mx-3">
         <table className="table">
           <thead>
             <tr>
@@ -43,9 +64,11 @@ export function ListNetworks() {
             {test.map((item,index) => (
               <tr key={index}>
                 <td>
-                  <Link to={`/network/${item.id}`}>Edit</Link>
+                  <Link className="btn btn-success" to={`/network/${item.id}`}>Edit</Link>
                   <span> | </span>
-                  <Link to={`/operations/${item.id}`}>Operations</Link>
+                  <Link className="btn btn-dark" to={`/operations/${item.id}`}>Operations</Link>
+                  <span> | </span>
+                  <button className="btn btn-danger" onClick={() => handleDelete(item.id)}>Delete</button>
                 </td>
                 <td>{item.status}</td>
                 <td>{item.id}</td>
