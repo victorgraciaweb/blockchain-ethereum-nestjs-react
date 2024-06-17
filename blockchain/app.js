@@ -389,11 +389,6 @@ app.get('/blocks/:net/', async (req, res) => {
         res.status(404).send({"error": "No network"})
         return;
     }
-
-    
-
-    
-    
 })
 
 app.get('/isAlive/:net/', async (req, res) => {
