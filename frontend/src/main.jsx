@@ -14,7 +14,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/*" element={<Header />} />
           <Route path="/home" element={<Home/>} /> 
           <Route path="/list" element={<ListNetworks />} />
-          <Route path="/addnetwork" element={<AddNetwork />} />
+          <Route path="/network" element={<AddNetwork />} />
+          <Route path="/network/:id" element={<AddNetwork />} />
       </Routes>
     </BrowserRouter>
 );

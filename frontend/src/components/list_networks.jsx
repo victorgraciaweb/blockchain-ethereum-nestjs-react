@@ -3,6 +3,8 @@ import { Header } from './header';
 import { Link } from 'react-router-dom';
 
 export function ListNetworks() {
+  
+  //El test debe ser la consulta al servidor par que me devuelva todas las redes que tengo
   const test = [{
     "status":"DOWN",
     "id":"1234",
@@ -23,7 +25,7 @@ export function ListNetworks() {
       <Header />
       <div className="mx-2 my-2 container">
         <h1>List Networks</h1>
-        <h6><Link to="/addnetwork">Add Network</Link></h6>
+        <h6><Link to="/network">Add Network</Link></h6>
       </div>
       <div className="">
         <table className="table">
@@ -41,9 +43,9 @@ export function ListNetworks() {
             {test.map((item,index) => (
               <tr key={index}>
                 <td>
-                  <Link to={`/list/${item.id}/edit`}>Edit</Link>
+                  <Link to={`/network/${item.id}`}>Edit</Link>
                   <span> | </span>
-                  <Link to={`/list/${item.id}/operaciones`}>Operations</Link>
+                  <Link to={`/operations/${item.id}`}>Operations</Link>
                 </td>
                 <td>{item.status}</td>
                 <td>{item.id}</td>

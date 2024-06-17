@@ -1,16 +1,29 @@
 import React, { useState } from 'react';
 import { Header } from './header';
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 export function AddNetwork() {
-  const [formData, setFormData] = useState({
+  const params= useParams()
+  const id = params.id 
+  
+  let initialData ={
     networkid: '',
     chainid: '',
     subnet: '',
     ipBootnode: '',
     allocation: [{ id: 1, value: '' }],
-    nodes: [{ id: 1, type: '', name: '', ip: '', port: '' }]  // Añadido estado para nodos
-  });
+    nodes: [{ id: 1, type: '', name: '', ip: '', port: '' }]
+  }
+
+  if (id){
+    //Hacer consultar al servidor si id existe
+    //para que devuelva todos los datos relevante a la id de la blockchain
+    initialData.networkid=id
+  }
+
+  //initialData puede ser vacio si vamos a crear uno nuevo
+  //o puede estar relleno si venimos de editar una blockchain levantada anteriormente
+  const [formData, setFormData] = useState(initialData);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -55,17 +68,8 @@ export function AddNetwork() {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const allAllocationsFilled = formData.allocation.every((item) => item.value.trim() !== '');
-    const allNodesFilled = formData.nodes.every((node) => node.type.trim() !== '' && node.name.trim() !== '' && node.ip.trim() !== '' && node.port.trim() !== '');
-    if (!allAllocationsFilled) {
-      alert('Please fill out all allocation fields.');
-      return;
-    }
-    if (!allNodesFilled) {
-      alert('Please fill out all node fields.');
-      return;
-    }
+   
+    //Envio de acción al servidor pdte programar.
     console.log('Form Data Submitted:', formData);
   };
 
