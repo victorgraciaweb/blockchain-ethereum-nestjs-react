@@ -1,17 +1,13 @@
 import React from 'react';
-import { Header } from './header';
-import { Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom';
 import { Operations } from './operations';
 
-
 export function Faucet() {
-  return (
-    <div>
-        <Operations />
-
+    //const { id } = useParams().id;
+    return (
         <div className="mx-2">
-            <button className="btn btn-primary">Faucet</button>      
+            <Operations/>
+            <button className="btn btn-warning w-100">Submit faucet</button>
         </div>
-    </div>
-  );
+    );
 }

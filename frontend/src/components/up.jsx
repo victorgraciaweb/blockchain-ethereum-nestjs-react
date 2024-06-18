@@ -4,13 +4,11 @@ import { Link } from 'react-router-dom'
 import { Operations } from './operations';
 
 export function Up() {
-  return (
-    <div>
-        <Operations />
-
+    //const { id } = useParams().id;
+    return (
         <div className="mx-2">
-            <button className="btn btn-primary">Up</button>      
+            <Operations/>
+            <button className="btn btn-success w-100">Submit Network Up</button>
         </div>
-    </div>
-  );
+    );
 }

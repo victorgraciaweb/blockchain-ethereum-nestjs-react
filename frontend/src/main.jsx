@@ -8,6 +8,11 @@ import { Home } from './components/home';
 import { AddNetwork } from './components/add_network';
 import { Operations } from './components/operations';
 import { Faucet } from './components/faucet';
+import { Transfer } from './components/transfer';
+import { Up } from './components/up';
+import { Down } from './components/down';
+import { Restart } from './components/restart';
+
 
 
 
@@ -21,11 +26,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/network/:id" element={<AddNetwork />} />
           <Route path="/operations/:id" element={<Operations />}/>
           <Route path="/faucet/:id" element={<Faucet />} />
-          <Route path="/transfer/:id" element={<Faucet />} />
-          <Route path="/up/:id" element={<Faucet />} />
-          <Route path="/down/:id" element={<Faucet />} />
-          <Route path="/restart/:id" element={<Faucet />} />
-          
+          <Route path="/transfer/:id" element={<Transfer />} />
+          <Route path="/up/:id" element={<Up />} />
+          <Route path="/down/:id" element={<Down />} />
+          <Route path="/restart/:id" element={<Restart />} />
       </Routes>
     </BrowserRouter>
 );

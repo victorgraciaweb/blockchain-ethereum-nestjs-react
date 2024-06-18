@@ -4,13 +4,10 @@ import { Link } from 'react-router-dom'
 import { Operations } from './operations';
 
 export function Down() {
-  return (
-    <div>
-        <Operations />
-
+    return (
         <div className="mx-2">
-            <button className="btn btn-primary">Down</button>      
+            <Operations/>
+            <button className="btn btn-danger w-100">Submit Network Down</button>
         </div>
-    </div>
-  );
+    );
 }

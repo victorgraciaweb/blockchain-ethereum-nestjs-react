@@ -4,13 +4,10 @@ import { Link } from 'react-router-dom'
 import { Operations } from './operations';
 
 export function Restart() {
-  return (
-    <div>
-        <Operations />
-
+    return (
         <div className="mx-2">
-            <button className="btn btn-primary">Restart</button>      
+            <Operations/>
+            <button className="btn btn-info w-100">Submit restart Network</button>
         </div>
-    </div>
-  );
+    );
 }

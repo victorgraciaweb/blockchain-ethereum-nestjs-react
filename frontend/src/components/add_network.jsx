@@ -119,6 +119,14 @@ export function AddNetwork() {
       });
       return;
     }
+    if (formData.allocation.length === 0){
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'There must be at least one account Allocation!'
+      });
+      return;
+    }
     // Enviar datos al servidor
     console.log('Form Data Submitted:', formData);
   };

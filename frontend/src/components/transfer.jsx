@@ -4,13 +4,11 @@ import { Link } from 'react-router-dom'
 import { Operations } from './operations';
 
 export function Transfer() {
-  return (
-    <div>
-        <Operations />
-
+    //const { id } = useParams().id;
+    return (
         <div className="mx-2">
-            <button className="btn btn-primary">Transfer</button>      
+            <Operations/>
+            <button className="btn btn-warning w-100">Submit transfer</button>
         </div>
-    </div>
-  );
+    );
 }
