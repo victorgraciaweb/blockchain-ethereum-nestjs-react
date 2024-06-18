@@ -66,6 +66,7 @@ function createGenesis(network) {
             }
         }
     }
+
     // metemos la cuenta generada 
     network.alloc.push(fs.readFileSync(`${pathNetwork}/address.txt`).toString().trim())
     genesis.alloc = network.alloc.reduce((acc, i) => {
@@ -244,7 +245,7 @@ function createCuentaBootnode(network, pathNetwork) {
     const GID = process.getgid();
 
     const cmd = `
-    docker run -e IP="@172.16.238.20:0?discport=30301" \
+    docker run -e IP="@0.0.0.0:0?discport=30301" \
     --rm -v ${pathNetwork}:/root ethereum/client-go:alltools-v1.13.8 \
     sh -c "geth account new --password /root/password.txt --datadir /root | grep 'of the key' | cut -c30-  \
     > /root/address.txt  \
