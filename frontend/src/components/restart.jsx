@@ -7,7 +7,9 @@ export function Restart() {
     return (
         <div className="mx-2">
             <Operations/>
-            <button className="btn btn-info w-100">Submit restart Network</button>
+            <button className="btn btn-info w-100">
+                <i className="bi bi-skip-start-btn-fill"></i> Submit restart Network
+            </button>
         </div>
     );
 }

@@ -8,7 +8,9 @@ export function Up() {
     return (
         <div className="mx-2">
             <Operations/>
-            <button className="btn btn-success w-100">Submit Network Up</button>
+            <button className="btn btn-success w-100">
+                <i className="bi bi-arrow-up-circle-fill"></i> Submit Network Up
+            </button>
         </div>
     );
 }

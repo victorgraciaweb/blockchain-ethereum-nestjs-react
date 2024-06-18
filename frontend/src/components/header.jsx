@@ -9,7 +9,6 @@ export function Header() {
         <h5 className="d-flex">ETH</h5>
         <h5><Link  className="d-flex" to="/home">Home</Link></h5>
         <h5><Link className="d-flex" to="/list">List Networks</Link></h5>
-
       </div>
       <hr style={{ width: '100%', marginTop: '10px', marginBottom: '10px' }} />
       
