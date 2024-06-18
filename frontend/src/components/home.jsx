@@ -21,16 +21,16 @@ export function Home() {
           <img src='../../public/victorporres.jpg' className='card-img-top' alt='Victor Porres' style={{ height: '350px', objectFit: 'cover' }} />
           <div className='card-body'>
             <h5 className='card-title'>Victor Porres</h5>
-            <p className='card-text'>Project Manager | Industrial Engineer | Implant Applications | Blockchain | Defi | Web3 | Developer</p>
+            <p className='card-text'>🚀 Project Manager | Industrial Engineer | Implant Applications | Blockchain | Defi | Web3 | Developer</p>
             <a href='https://www.linkedin.com/in/victorporres/' target='_blank'  className='btn btn-primary'>Linkedin</a>
           </div>
         </div>
         <div className='card mx-4' style={{ width: '18rem' }}>
-          <img src='../../public/pedrocollado.jpg' className='card-img-top' alt='Victor Porres' style={{ height: '350px', objectFit: 'cover' }} />
+          <img src='../../public/pedrocollado.png' className='card-img-top' alt='Victor Porres' style={{ height: '350px', objectFit: 'cover' }} />
           <div className='card-body'>
             <h5 className='card-title'>Pedro Collado</h5>
-            <p className='card-text'>.....</p>
-            <a href='https://www.linkedin.com/in/pedrocollado' target='_blank' className='btn btn-primary'>Linkedin</a>
+            <p className='card-text'>🚀 Network Engineer</p>
+            <a href='https://www.linkedin.com/in/colladopa/' target='_blank' className='btn btn-primary'>Linkedin</a>
           </div>
         </div>
       </div>

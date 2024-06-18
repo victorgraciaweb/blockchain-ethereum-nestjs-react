@@ -1,7 +1,7 @@
 import React from 'react';
-
 import { Header } from './header';
 import { Link, useParams } from 'react-router-dom'
+
 
 export function Operations() {
     const params = useParams()
@@ -16,7 +16,6 @@ export function Operations() {
         "subnet":"192.168.0.1",
         "bootnode":1234
       }
-
 
   return (
     <div>
