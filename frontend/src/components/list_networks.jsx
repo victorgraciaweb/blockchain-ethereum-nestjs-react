@@ -7,17 +7,17 @@ export function ListNetworks() {
   
   //El test debe ser la consulta al servidor par que me devuelva todas las redes que tengo
   const test = [{
-    "status":"DOWN",
-    "id":"1234",
-    "chain":"chain_XXX",
-    "subnet":"192.168.0.1",
-    "bootnode":1234
+    'status':'DOWN',
+    'id':'1234',
+    'chain':'chain_XXX',
+    'subnet':'192.168.0.1',
+    'bootnode':1234
   },{
-    "status":"UP",
-    "id":"4321",
-    "chain":"chain_YYY",
-    "subnet":"192.168.0.2",
-    "bootnode":1234
+    'status':'UP',
+    'id':'4321',
+    'chain':'chain_YYY',
+    'subnet':'192.168.0.2',
+    'bootnode':1234
   }
 ];
 
@@ -44,12 +44,12 @@ const handleDelete = (id) => {
   return (
     <div>
       <Header />
-      <div className="mx-3 my-2 container">
+      <div className='mx-3 my-2 container'>
         <h1>List Networks</h1>
-        <h6><Link className="btn btn-primary" to="/network">Add Network</Link></h6>
+        <h6><Link className='btn btn-primary' to='/network'>Add Network</Link></h6>
       </div>
-      <div className="mx-3">
-        <table className="table">
+      <div className='mx-3'>
+        <table className='table'>
           <thead>
             <tr>
               <th>Options</th>
@@ -60,15 +60,15 @@ const handleDelete = (id) => {
               <th>Bootnode</th>
             </tr>
           </thead>
-          <tbody className="table-group-divider" >
+          <tbody className='table-group-divider' >
             {test.map((item,index) => (
               <tr key={index}>
                 <td>
-                  <Link className="btn btn-success" to={`/network/${item.id}`}>Edit</Link>
+                  <Link className='btn btn-success' to={`/network/${item.id}`}>Edit</Link>
                   <span> | </span>
-                  <Link className="btn btn-dark" to={`/operations/${item.id}`}>Operations</Link>
+                  <Link className='btn btn-dark' to={`/operations/${item.id}`}>Operations</Link>
                   <span> | </span>
-                  <button className="btn btn-danger" onClick={() => handleDelete(item.id)}>Delete</button>
+                  <button className='btn btn-danger' onClick={() => handleDelete(item.id)}>Delete</button>
                 </td>
                 <td>{item.status}</td>
                 <td>{item.id}</td>

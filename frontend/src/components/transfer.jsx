@@ -6,14 +6,14 @@ import Swal from 'sweetalert2';
 export function Transfer() {
     const { id } = useParams(); // Obtener id de los parámetros de la URL
     const [tx, setTx] = useState(null);
-    const [account, setAccount] = useState("");
+    const [account, setAccount] = useState('');
 
     useEffect(() => {
         window.ethereum.request({
-            method: "eth_requestAccounts"
+            method: 'eth_requestAccounts'
         }).then(accounts => {
             setAccount(accounts[0]);
-            window.ethereum.on("accountsChanged", (accounts) => {
+            window.ethereum.on('accountsChanged', (accounts) => {
                 setAccount(accounts[0]);
             });
         });
@@ -21,15 +21,15 @@ export function Transfer() {
     }, []);
     //const { id } = useParams().id;
     return (
-        <div className="mx-2">
+        <div className='mx-2'>
             <Operations/>
             <form>
                 <div>
                     <h2>Transfer</h2>
-                    <h5 className="text">Account:{account}</h5>
+                    <h5 className='text'>Account:{account}</h5>
                 </div>
-                <button className="btn btn-warning w-100">
-                    <i className="bi bi-cash-coin"></i> Submit transfer
+                <button className='btn btn-warning w-100'>
+                    <i className='bi bi-cash-coin'></i> Submit transfer
                 </button>
             </form>
         </div>
