@@ -5,43 +5,24 @@ import * as path from 'path';
 import { CreateNetworkDto } from './dto/create-network.dto';
 import { UpdateNetworkDto } from './dto/update-network.dto';
 import { Network } from './interfaces/network.interface';
+import { FileService } from 'src/file/file.service';
 
 @Injectable()
 export class NetworksService {
 
-  private readonly filePath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks.json');
-  
+  private readonly filePath: string;
+
+  constructor(private fileService: FileService) {
+    this.filePath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks.json');
+  }
+
   create(createNetworkDto: CreateNetworkDto) {
     return 'This action adds a new network';
   }
 
-
-
-
-
-
   async findAll(): Promise<Network[]> {
-    try {  
-      const jsonData = await fs.promises.readFile(this.filePath, 'utf8');
-      const networks: Network[] = JSON.parse(jsonData);
-
-      return networks;
-
-    } catch (error) {
-      if (error.code === 'ENOENT') {
-        throw new NotFoundException(`File not found at ${this.filePath}`);
-      }
-      throw error;
-    }
+    return await this.fileService.readFile<Network[]>(this.filePath);
   }
-
-
-
-
-  
-
-
-  
 
   findOne(id: number) {
     return `This action returns a #${id} network`;
