@@ -16,9 +16,39 @@ export class NetworksService {
     this.filePath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks.json');
   }
 
-  create(createNetworkDto: CreateNetworkDto) {
-    return 'This action adds a new network';
+
+
+
+
+  async create(createNetworkDto: CreateNetworkDto): Promise<Network> {
+    const networks = await this.fileService.readFile<Network[]>(this.filePath);
+
+    // Buscar si existe el network con el mismo ID
+    const existingNetworkIndex = networks.findIndex(i => i.id === createNetworkDto.id);
+
+    if (existingNetworkIndex !== -1) {
+      // Actualizar el network existente
+      networks[existingNetworkIndex] = createNetworkDto;
+    } else {
+      // Agregar el nuevo network
+      networks.push(createNetworkDto);
+    }
+
+
+    //fs.writeFileSync(this.filePath, JSON.stringify(networks, null, 4));
+    //this.fileService.writeFile<Network[]>(this.filePath);
+
+
+
+
+    //return networks;
+    return createNetworkDto;
   }
+
+
+
+
+
 
   async findAll(): Promise<Network[]> {
     return await this.fileService.readFile<Network[]>(this.filePath);
