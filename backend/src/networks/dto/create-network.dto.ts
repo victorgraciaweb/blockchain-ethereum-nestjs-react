@@ -4,16 +4,15 @@ import { NodoDto } from './nodo.dto';
 import { IsSubnetConstraint } from 'src/common/validators/is-subnet.constraint';
 import { IsIPConstraint } from 'src/common/validators/is-ip.constraint';
 import { IsEthereumAddressConstraint } from '../../common/validators/is-ethereum-address.constraint';
+import { IsUniqueRpcNodeConstraint } from 'src/common/validators/Is-unique-rpc-node.constraint';
 
 export class CreateNetworkDto {
     @IsString()
     @IsNotEmpty()
     id: string;
 
-    @IsInt()
+    @IsString()
     @IsNotEmpty()
-    @Min(1)
-    @Max(100)
     chainId: string;
 
     @IsString()
@@ -33,7 +32,9 @@ export class CreateNetworkDto {
     alloc: string[];
 
     @IsArray()
+    @ArrayMinSize(1)
     @ValidateNested({ each: true })
     @Type(() => NodoDto)
+    @Validate(IsUniqueRpcNodeConstraint)
     nodos: NodoDto[];
 }

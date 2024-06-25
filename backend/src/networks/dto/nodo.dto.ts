@@ -1,8 +1,10 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsIn, IsNotEmpty, IsOptional, IsString, Validate } from 'class-validator';
+import { IsIPConstraint } from 'src/common/validators/is-ip.constraint';
 
 export class NodoDto {
     @IsString()
     @IsNotEmpty()
+    @IsIn(['rpc', 'normal', 'miner'])
     type: string;
 
     @IsString()
@@ -11,6 +13,7 @@ export class NodoDto {
 
     @IsString()
     @IsNotEmpty()
+    @Validate(IsIPConstraint)
     ip: string;
 
     @IsOptional()
