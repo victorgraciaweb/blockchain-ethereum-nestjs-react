@@ -52,8 +52,21 @@ export class NetworksService {
     return network;
   }
 
-  update(id: number, updateNetworkDto: UpdateNetworkDto) {
-    return `This action updates a #${id} network`;
+  async update(id: string, updateNetworkDto: UpdateNetworkDto): Promise<Network> {
+    const networks = await this.findAll();
+
+    const index = networks.findIndex(network => network.id === id);
+
+    if (index === -1) {
+      throw new NotFoundException(`Network with id ${id} not found`);
+    }
+
+    const updatedNetwork = { ...networks[index], ...updateNetworkDto };
+    networks[index] = updatedNetwork;
+
+    await this.fileService.writeFile(this.filePath, networks);
+
+    return updatedNetwork;
   }
 
   async remove(id: string): Promise<void> {

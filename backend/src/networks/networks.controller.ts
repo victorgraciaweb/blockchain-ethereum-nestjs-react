@@ -24,7 +24,7 @@ export class NetworksController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateNetworkDto: UpdateNetworkDto) {
-    return this.networksService.update(+id, updateNetworkDto);
+    return this.networksService.update(id, updateNetworkDto);
   }
 
   @Delete(':id')
