@@ -19,16 +19,16 @@ export class NetworksController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.networksService.findOne(id);
+    return this.networksService.findOneById(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateNetworkDto: UpdateNetworkDto) {
-    return this.networksService.update(+id, updateNetworkDto);
+    return this.networksService.update(id, updateNetworkDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.networksService.remove(+id);
+    return this.networksService.remove(id);
   }
 }

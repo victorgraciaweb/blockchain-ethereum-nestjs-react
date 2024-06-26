@@ -1,4 +1,4 @@
-import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested, IsNumber, Validate, IsEthereumAddress, ArrayMinSize, IsInt, Min, Max } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString, ValidateNested, IsNumber, Validate, IsEthereumAddress, ArrayMinSize, IsInt, Min, Max, ArrayMaxSize } from 'class-validator';
 import { Type } from 'class-transformer';
 import { NodoDto } from './nodo.dto';
 import { IsSubnetConstraint } from 'src/common/validators/is-subnet.constraint';
@@ -33,6 +33,7 @@ export class CreateNetworkDto {
 
     @IsArray()
     @ArrayMinSize(1)
+    @ArrayMaxSize(5)
     @ValidateNested({ each: true })
     @Type(() => NodoDto)
     @Validate(IsUniqueRpcNodeConstraint)
