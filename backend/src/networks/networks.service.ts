@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -16,46 +16,36 @@ export class NetworksService {
     this.filePath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks.json');
   }
 
-
-
-
-
   async create(createNetworkDto: CreateNetworkDto): Promise<Network> {
     const networks = await this.fileService.readFile<Network[]>(this.filePath);
 
-    // Buscar si existe el network con el mismo ID
-    const existingNetworkIndex = networks.findIndex(i => i.id === createNetworkDto.id);
+    const network = networks.find(network => network.id === createNetworkDto.id);
 
-    if (existingNetworkIndex !== -1) {
-      // Actualizar el network existente
-      networks[existingNetworkIndex] = createNetworkDto;
-    } else {
-      // Agregar el nuevo network
-      networks.push(createNetworkDto);
+    if (network) {
+      throw new BadRequestException(`Error creating new Network with id ${createNetworkDto.id}. Resource already exists`);
     }
 
+    networks.push(createNetworkDto);
 
-    //fs.writeFileSync(this.filePath, JSON.stringify(networks, null, 4));
-    //this.fileService.writeFile<Network[]>(this.filePath);
+    await this.fileService.writeFile(this.filePath, networks);
 
-
-
-
-    //return networks;
     return createNetworkDto;
   }
-
-
-
-
-
 
   async findAll(): Promise<Network[]> {
     return await this.fileService.readFile<Network[]>(this.filePath);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} network`;
+  async findOne(id: string): Promise<Network> {
+    let networks = await this.fileService.readFile<Network[]>(this.filePath);
+
+    const network = networks.find(network => network.id === id);
+
+    if (!network) {
+      throw new NotFoundException(`Not found at ${id}`);
+    }
+
+    return network;
   }
 
   update(id: number, updateNetworkDto: UpdateNetworkDto) {
