@@ -19,7 +19,7 @@ export class NetworksController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.networksService.findOne(+id);
+    return this.networksService.findOne(id);
   }
 
   @Patch(':id')
