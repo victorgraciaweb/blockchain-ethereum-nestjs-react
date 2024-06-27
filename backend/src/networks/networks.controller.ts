@@ -18,7 +18,7 @@ export class NetworksController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOneById(@Param('id') id: string) {
     return this.networksService.findOneById(id);
   }
 
@@ -31,4 +31,14 @@ export class NetworksController {
   remove(@Param('id') id: string) {
     return this.networksService.remove(id);
   }
+
+   @Post(':id/up')
+   up(@Param('id') id: string) {
+     return this.networksService.up(id);
+   }
+
+   @Post(':id/down')
+   down(@Param('id') id: string) {
+     return this.networksService.down(id);
+   }
 }

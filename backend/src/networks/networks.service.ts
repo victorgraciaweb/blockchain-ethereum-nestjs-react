@@ -79,4 +79,33 @@ export class NetworksService {
 
     await this.fileService.writeFile(this.filePath, updatedNetworks);
   }
+
+  async down(id: string): Promise<{ success: boolean }> {
+    const networks = await this.findAll();
+    const DIR_BASE = path.join(__dirname, 'datos');
+    const DIR_NETWORKS = path.join(DIR_BASE, 'networks');
+
+    const pathNetwork = path.join(DIR_NETWORKS, id);
+
+    if (!this.existsDir(pathNetwork)) {
+      return { success: false };
+    } else {
+      //execSync(`docker compose -f ${pathNetwork}/docker-compose.yml down`);
+      // fs.rmSync(pathNetwork, { recursive: true }); // Descomentar si quieres eliminar el directorio
+      return { success: true };
+    }
+  }
+
+  async up(id: string): Promise<{ success: boolean }> {
+    // TODO: Implementar la lógica para levantar la red
+    return { success: true };
+  }
+
+  private existsDir(path: string): boolean {
+    try {
+      return fs.statSync(path).isDirectory();
+    } catch (err) {
+      return false;
+    }
+  }
 }
