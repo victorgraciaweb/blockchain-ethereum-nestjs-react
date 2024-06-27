@@ -33,11 +33,11 @@ export function Operations() {
         </div>
 
         <div>
-        <h3 className={`mt-4 ${test.status === "DOWN" ? "text-danger" : test.status === "UP" ? "text-success" : ""}`}>
+        <h3 className={`mx-3 mt-4 ${test.status === "DOWN" ? "text-danger" : test.status === "UP" ? "text-success" : ""}`}>
             Datos de la red {test.id} -- {test.status}
         </h3>
 
-            <table className="table">
+            <table className="mx-3 table">
             <thead>
                 <tr>
                     <th>Id</th>

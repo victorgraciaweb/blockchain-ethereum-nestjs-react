@@ -1,80 +1,91 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { Operations } from './operations';
 import Swal from 'sweetalert2';
-import { ethers } from 'ethers'
+import { ethers } from 'ethers';
 
 export function Transfer() {
-    const id = useParams().id
-    console.log(id)
+    console.log('Ethers:', ethers);
+    const { id } = useParams();
+    console.log(id);
     const [account, setAccount] = useState('');
-    const [provider, setProvider] = useState(null);
-    const [signer, setSigner] = useState(null);
+    const [metamaskAvailable, setMetamaskAvailable] = useState(true);
 
     useEffect(() => {
-        window.ethereum.request({
-            method: 'eth_requestAccounts'
-        }).then(accounts => {
-            setAccount(accounts[0]);
-            window.ethereum.on('accountsChanged', (accounts) => {
+        console.log(typeof window.ethereum);
+        if (typeof window.ethereum !== 'undefined') {
+            window.ethereum.request({
+                method: 'eth_requestAccounts'
+            }).then(accounts => {
                 setAccount(accounts[0]);
+                window.ethereum.on('accountsChanged', (accounts) => {
+                    setAccount(accounts[0]);
+                });
+            }).catch(error => {
+                Swal.fire('Error', `Failed to connect to MetaMask: ${error.message}`, 'error');
             });
-        });
-
+        } else {
+            setMetamaskAvailable(false);
+            Swal.fire('Error', 'MetaMask is not installed. Please install it to use this feature.', 'error');
+        }
     }, []);
-
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         const fromAddress = document.getElementById('from').value;
         const toAddress = document.getElementById('to').value;
-        const amount = document.getElementById('amount').value
-        console.log(toAddress)
-        console.log(amount)
+        const amount = document.getElementById('amount').value;
+        console.log(toAddress);
+        console.log(amount);
 
         const weiAmount = ethers.utils.parseUnits(amount.toString(), 'ether');
         const txParams = {
             to: toAddress,
             from: fromAddress,
-            value: weiAmount.toHexString(),
-        }
+            value: weiAmount._hex
+        };
+        console.log(txParams);
 
         try {
-            const tx=await ethereum.request({
-                method:"eth_sendTransaction",
-                params:[txParams]
-            })
+            const tx = await ethereum.request({
+                method: "eth_sendTransaction",
+                params: [txParams]
+            });
             Swal.fire('Success', `Transaction sent: ${tx.hash}`, 'success');
         } catch (error) {
             Swal.fire('Error', `Transaction failed: ${error.message}`, 'error');
         }
     };
 
-        
-    //const { id } = useParams().id;
-    return(
+    return (
         <div className="mx-2">
             <Operations />
-            <h2 >Transfer</h2>
+            <h2>Transfer</h2>
             <div className="card p-4 shadow">
-                
-                <form onSubmit={handleSubmit}>
-                <div className="mb-1">
-                        <label className="form-label">From:</label>
-                        <input id="from" type="text" className="form-control" value={account} readOnly />
+                {metamaskAvailable ? (
+                    <form onSubmit={handleSubmit}>
+                        <div className="mb-1">
+                            <label className="form-label">From:</label>
+                            <input id="from" type="text" className="form-control" value={account} readOnly />
+                        </div>
+                        <div className="mb-1">
+                            <label className="form-label">To:</label>
+                            <input id="to" className="form-control" required />
+                        </div>
+                        <div className="mb-1">
+                            <label className="form-label">Amount:</label>
+                            <input id="amount" className="form-control" required />
+                        </div>
+                        <button type="submit" className="btn btn-warning w-100 my-2">
+                            <i className="bi bi-cash-coin"></i> Submit Transfer
+                        </button>
+                    </form>
+                ) : (
+                    <div>
+                        <h2>Transfer</h2>
+                        <p>MetaMask is required to use the transfer feature. Please install MetaMask and try again.</p>
                     </div>
-                    <div className="mb-1">
-                        <label className="form-label">To:</label>
-                        <input id="to" className="form-control" required />
-                    </div>
-                    <div className="mb-1">
-                        <label className="form-label">Amount:</label>
-                        <input id="amount" className="form-control" required />
-                    </div>
-                    <button type="submit" className="btn btn-warning w-100 my-2">
-                        <i className="bi bi-cash-coin"></i> Submit Transfer
-                    </button>
-                </form>
+                )}
             </div>
         </div>
     );

@@ -7,17 +7,26 @@ export function Faucet() {
     const { id } = useParams(); // Obtener id de los parámetros de la URL
     const [tx, setTx] = useState(null);
     const [account, setAccount] = useState('');
+    const [metamaskAvailable, setMetamaskAvailable] = useState(true);
 
     useEffect(() => {
-        window.ethereum.request({
-            method: 'eth_requestAccounts'
-        }).then(accounts => {
-            setAccount(accounts[0]);
-            window.ethereum.on('accountsChanged', (accounts) => {
+        if (window.ethereum) {
+            window.ethereum.request({
+                method: 'eth_requestAccounts'
+            }).then(accounts => {
                 setAccount(accounts[0]);
+                window.ethereum.on('accountsChanged', (accounts) => {
+                    setAccount(accounts[0]);
+                });
             });
-        });
-
+        } else {
+            setMetamaskAvailable(false);
+            Swal.fire({
+                title: 'MetaMask is not available',
+                text: 'Please install MetaMask to use this feature.',
+                icon: 'warning',
+            });
+        }
     }, []);
 
     async function invokeFaucet(event) {
@@ -44,15 +53,22 @@ export function Faucet() {
     return (
         <div className='mx-2'>
             <Operations />
-            <form>
+            {metamaskAvailable ? (
+                <form>
+                    <div>
+                        <h2>Faucet</h2>
+                        <h5 className='text'>Account: {account}</h5>
+                    </div>
+                    <button onClick={invokeFaucet} className='btn btn-primary w-100'>
+                        <i className='bi bi-droplet'></i> Submit faucet
+                    </button>
+                </form>
+            ) : (
                 <div>
                     <h2>Faucet</h2>
-                    <h5 className='text'>Account:{account}</h5>
+                    <p>MetaMask is required to use the faucet. Please install MetaMask and try again.</p>
                 </div>
-                <button onClick={invokeFaucet} className='btn btn-primary w-100'>
-                    <i className='bi bi-droplet'></i> Submit faucet
-                </button>
-            </form>
+            )}
         </div>
     );
 }
