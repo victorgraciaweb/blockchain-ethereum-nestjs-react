@@ -10,7 +10,7 @@ export function Home() {
       </div>
       <div className='d-flex justify-content-start'>
         <div className='card mx-4' style={{ width: '18rem' }}>
-          <img src='../../public/victorgracia.png' className='card-img-top' alt='Victor Gracia' style={{ height: '350px', objectFit: 'cover' }} />
+          <img src='../../public/victorgracia.png' className='card-img-top' alt='Víctor Gracia' style={{ height: '350px', objectFit: 'cover' }} />
           <div className='card-body'>
             <h5 className='card-title'>Victor Gracia</h5>
             <p className='card-text'>🚀 Blockchain Developer | NodeJS | NestJS | TypeScript | Ethereum | Blockchain | Solidity | Web3 | Crypto | DeFi | NFT | Docker | Kubernetes | Polygon 👨‍💻 (FREELANCE)</p>
@@ -18,7 +18,7 @@ export function Home() {
           </div>
         </div>
         <div className='card mx-4' style={{ width: '18rem' }}>
-          <img src='../../public/victorporres.jpg' className='card-img-top' alt='Victor Porres' style={{ height: '350px', objectFit: 'cover' }} />
+          <img src='../../public/victorporres.jpg' className='card-img-top' alt='Víctor Porres' style={{ height: '350px', objectFit: 'cover' }} />
           <div className='card-body'>
             <h5 className='card-title'>Victor Porres</h5>
             <p className='card-text'>🚀 Project Manager | Industrial Engineer | Implant Applications | Blockchain | Defi | Web3 | Developer</p>
@@ -26,7 +26,7 @@ export function Home() {
           </div>
         </div>
         <div className='card mx-4' style={{ width: '18rem' }}>
-          <img src='../../public/pedrocollado.png' className='card-img-top' alt='Victor Porres' style={{ height: '350px', objectFit: 'cover' }} />
+          <img src='../../public/pedrocollado.png' className='card-img-top' alt='Víctor Porres' style={{ height: '350px', objectFit: 'cover' }} />
           <div className='card-body'>
             <h5 className='card-title'>Pedro Collado</h5>
             <p className='card-text'>🚀 Network Engineer</p>

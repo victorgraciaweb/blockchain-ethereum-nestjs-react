@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './header';
-import { useParams, useNavigate  } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 
@@ -9,7 +9,7 @@ export function AddNetwork() {
   const navigate = useNavigate();
   const id = params.id;
 
-  let initialData = {
+  const initialData = {
     id: '',
     chainId: '',
     subnet: '',
@@ -59,7 +59,7 @@ export function AddNetwork() {
   const handleAllocationChange = (e, index) => {
     const { value } = e.target;
     const alloc = [...formData.alloc];
-    alloc[index]= value;
+    alloc[index] = value;
     setFormData({ ...formData, alloc });
   };
 
@@ -132,7 +132,6 @@ export function AddNetwork() {
       return;
     }
 
-    // Array con solo los datos necesarios
     const nodosFiltered = formData.nodos.map(node => ({
       type: node.type,
       name: node.name,
@@ -140,28 +139,27 @@ export function AddNetwork() {
       port: node.port
     }));
 
-    // Este es el body que vamos a enviar a la API
     const newFormData = {
       ...formData,
       nodos: nodosFiltered
     };
 
     try {
-      // console.log("id",newFormData.id)
-      // console.log("chainId", newFormData.chainId)
-      // console.log("subnet", newFormData.subnet)
-      // console.log("ipBootnode",newFormData.ipBootnode)
-      // console.log("alloc",newFormData.alloc)
-      // console.log("nodos",newFormData.nodos)
-      const response = await axios.post('http://localhost:3000/api/v1/networks', newFormData, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
-      //Swal.fire('Success', 'Network created successfully!', 'success');
+      const headers = {
+        'Content-Type': 'application/json'
+      };
+      let response;
+      if (isEditMode) {
+        // modo edición
+        response = await axios.patch(`http://localhost:3000/api/v1/networks/${id}`, newFormData, { headers });
+      } else {
+        // modo creación
+        response = await axios.post('http://localhost:3000/api/v1/networks', newFormData, { headers });
+      }
+      Swal.fire('Success', 'Network saved successfully!', 'success');
       navigate('/list');
     } catch (error) {
-      Swal.fire('Error', `Failed to create network: ${error.response.data.message}`, 'error');
+      Swal.fire('Error', `Failed to save network: ${error.response?.data?.message || error.message}`, 'error');
     }
   };
 
