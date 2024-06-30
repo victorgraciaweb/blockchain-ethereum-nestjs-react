@@ -1,19 +1,24 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as yaml from 'js-yaml';
 
 import { CreateNetworkDto } from './dto/create-network.dto';
 import { UpdateNetworkDto } from './dto/update-network.dto';
 import { Network } from './interfaces/network.interface';
 import { FileService } from 'src/file/file.service';
+import { DockerService } from 'src/docker/docker.service';
+import { PassThrough } from 'stream';
 
 @Injectable()
 export class NetworksService {
 
   private readonly filePath: string;
+  private readonly networksPath: string;
 
-  constructor(private fileService: FileService) {
+  constructor(private fileService: FileService, private dockerService: DockerService) {
     this.filePath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks.json');
+    this.networksPath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks');
   }
 
   async create(createNetworkDto: CreateNetworkDto): Promise<Network> {
@@ -81,31 +86,70 @@ export class NetworksService {
   }
 
   async down(id: string): Promise<{ success: boolean }> {
-    const networks = await this.findAll();
-    const DIR_BASE = path.join(__dirname, 'datos');
-    const DIR_NETWORKS = path.join(DIR_BASE, 'networks');
+    try {
+      const networks = await this.findAll();
+      const networkPath = path.join(this.networksPath, id);
 
-    const pathNetwork = path.join(DIR_NETWORKS, id);
-
-    if (!this.existsDir(pathNetwork)) {
+      if (!this.fileService.directoryExists(networkPath)) {
+        return { success: false };
+      } else {
+        await this.dockerService.stopAllDockerComposeServices(networkPath);
+        return { success: true };
+      }
+    } catch (error) {
       return { success: false };
-    } else {
-      //execSync(`docker compose -f ${pathNetwork}/docker-compose.yml down`);
-      // fs.rmSync(pathNetwork, { recursive: true }); // Descomentar si quieres eliminar el directorio
-      return { success: true };
     }
   }
 
   async up(id: string): Promise<{ success: boolean }> {
-    // TODO: Implementar la lógica para levantar la red
-    return { success: true };
+    try {
+      const networks = await this.findAll();
+      const network = networks.find(n => n.id === id);
+      var networkPath: string
+      
+      if (!network) {
+        throw new Error('Network not found');
+      } else {
+        networkPath = path.join(this.networksPath, id);
+      }
+
+      if (!(await this.fileService.directoryExists(networkPath))) {
+        await this.dockerService.createNetworkDirectories(network, networkPath);
+        const password = this.dockerService.createPassword();
+        await this.dockerService.writePasswordToFile(networkPath, password);
+        await this.dockerService.createBootnodeAccount(networkPath);
+        const genesis = await this.dockerService.createGenesis(network, networkPath);
+        await this.dockerService.writeGenesisToFile(networkPath, genesis);
+    
+        const yamlStr = yaml.dump(this.dockerService.createDockerCompose(network), { indent: 2 });
+        await this.dockerService.writeDockerComposeToFile(networkPath, yamlStr);
+        const env = this.dockerService.createEnv(network, this.networksPath);
+        await this.dockerService.writeEnvToFile(networkPath, env);
+      }
+
+      await this.dockerService.startAllDockerComposeServices(networkPath);
+      return { success: true };
+      
+    } catch (error) {
+      console.error(error);
+      return { success: false};
+    }
   }
 
-  private existsDir(path: string): boolean {
-    try {
-      return fs.statSync(path).isDirectory();
-    } catch (err) {
-      return false;
+  async restart(id: string): Promise<{ success: boolean }> {
+    try{
+      const networks = await this.findAll();
+      const network = networks.find(n => n.id === id);
+
+      if (!network) {
+        return { success: false };
+      } else {
+        await this.dockerService.restartAndUpdateDockerComposeServices(network, this.networksPath);
+      }
+      return { success: true };
+    } catch (error) {
+      console.error(error);
+      return { success: false };
     }
   }
 }

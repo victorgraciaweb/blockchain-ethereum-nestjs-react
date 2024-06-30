@@ -1,11 +1,12 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { NetworksService } from './networks.service';
 import { NetworksController } from './networks.controller';
 import { FileModule } from '../file/file.module';
+import { DockerModule } from 'src/docker/docker.module';
 
 @Module({
   controllers: [NetworksController],
   providers: [NetworksService],
-  imports: [FileModule]
+  imports: [FileModule, forwardRef(() => DockerModule)],
 })
 export class NetworksModule {}
