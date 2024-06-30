@@ -77,15 +77,21 @@ export function AddNetwork() {
     const { name, value } = e.target;
     const nodos = [...formData.nodos];
 
-    if (name === 'type' && value === 'miner') {
-      const minerCount = nodos.filter(node => node.type === 'miner').length;
-      if (minerCount >= 1) {
-        Swal.fire({
-          icon: "error",
-          title: "ERROR",
-          text: "There can only be one node of type MINER!"
-        });
-        return;
+    if (name === 'type') {
+      if (value === 'miner') {
+        const minerCount = nodos.filter(node => node.type === 'miner').length;
+        if (minerCount >= 1) {
+          Swal.fire({
+            icon: "error",
+            title: "ERROR",
+            text: "There can only be one node of type MINER!"
+          });
+          return;
+        }
+        nodos[index].port = '';
+      }
+      if (value === 'normal') {
+        nodos[index].port = '';
       }
     }
 
@@ -123,6 +129,19 @@ export function AddNetwork() {
       });
       return;
     }
+
+    const rpcNodes = formData.nodos.filter(node => node.type === "rpc");
+    for (const node of rpcNodes) {
+      if (!node.port) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'All RPC nodes must have a port number!'
+        });
+        return;
+      }
+    }
+
     if (formData.alloc.length === 0) {
       Swal.fire({
         icon: 'error',
@@ -163,12 +182,11 @@ export function AddNetwork() {
     }
   };
 
-
   return (
     <div>
       <Header />
       <div className="mx-3 my-2 container">
-      <h1>{isEditMode ? 'Edit Network' : 'Add Network'}</h1>
+        <h1>{isEditMode ? 'Edit Network' : 'Add Network'}</h1>
       </div>
       <form className="mx-3 mb-5" onSubmit={handleSubmit}>
         <div className="mb-1">
@@ -242,7 +260,7 @@ export function AddNetwork() {
                   <input type="text" className="form-control" name="ip" value={node.ip} onChange={(e) => handleNodeChange(e, index)} required/>
                 </td>
                 <td>
-                  <input type="text" className="form-control" name="port" value={node.port} onChange={(e) => handleNodeChange(e, index)}/>
+                  <input type="text" className="form-control" name="port" value={node.port} onChange={(e) => handleNodeChange(e, index)} disabled={node.type === 'miner' || node.type === 'normal'} required={node.type !== 'miner' || node.type !== 'normal'}/>
                 </td>
               </tr>
             ))}
