@@ -28,4 +28,27 @@ export class FileService {
       throw error;
     }
   }
+
+  async createDirectory(directoryPath: string): Promise<void> {
+    try {
+      await fs.promises.mkdir(directoryPath, { recursive: true });
+    } catch (error) {
+      if (error.code === "EEXIST") {
+        throw new FileNotFoundException(`Directory already exists at ${directoryPath}`);
+      }
+      throw error;
+    }
+  }
+
+  async directoryExists(directoryPath: string): Promise<boolean> {
+    try {
+      await fs.promises.access(directoryPath);
+      return true;
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        return false;
+      }
+      throw error;
+    }
+  }
 }

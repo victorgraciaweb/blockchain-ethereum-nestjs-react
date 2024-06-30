@@ -41,4 +41,9 @@ export class NetworksController {
    down(@Param('id') id: string) {
      return this.networksService.down(id);
    }
+
+   @Post(':id/restart')
+   restart(@Param('id') id: string) {
+     return this.networksService.restart(id);
+   }
 }
