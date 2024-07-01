@@ -9,6 +9,7 @@ import { Network } from './interfaces/network.interface';
 import { FileService } from 'src/file/file.service';
 import { DockerService } from 'src/docker/docker.service';
 import { PassThrough } from 'stream';
+import { ethers } from 'ethers';
 
 @Injectable()
 export class NetworksService {
@@ -149,6 +150,44 @@ export class NetworksService {
       return { success: true };
     } catch (error) {
       console.error(error);
+      return { success: false };
+    }
+  }
+
+  async isAlive(id: string): Promise<{success: boolean}> {
+    try {
+      const networks = await this.findAll();
+      const network = networks.find(n => n.id === id);
+
+      if (!network) {
+        return { success: false };
+      }
+
+      const networkPath = path.join(this.networksPath, network.id)
+      const port = network.nodos.find(i => i.type == 'rpc').port
+
+      // Temporarily suppress console logs
+      const originalConsoleLog = console.log;
+      console.log = () => {};
+
+      const provider = new ethers.JsonRpcProvider(`http://localhost:${port}`);
+      const blockNumber = await provider.getBlockNumber();
+
+      // Restore console logs
+      console.log = originalConsoleLog;
+
+      if (!blockNumber) {
+        return({ success: false })
+      }
+
+      return({ success: true })
+
+    } catch (error) {
+      if (error.code === 'ECONNREFUSED') {
+        console.error('Network is down:', error.message);
+        return { success: false };
+      }
+      console.error('Error checking network status:', error);
       return { success: false };
     }
   }
