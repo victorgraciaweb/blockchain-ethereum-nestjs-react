@@ -46,4 +46,10 @@ export class NetworksController {
    restart(@Param('id') id: string) {
      return this.networksService.restart(id);
    }
+
+   @Get(':id/isAlive')
+   isAlive(@Param('id') id: string) {
+     return this.networksService.isAlive(id);
+   }
+
 }
