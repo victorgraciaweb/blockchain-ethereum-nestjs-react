@@ -43,8 +43,8 @@ export function Down() {
     return (
         <div className="mx-2">
             <Operations/>
-            <button onClick={handleClick} className="btn btn-success w-100">
-                <i className="bi bi-arrow-up-circle-fill"></i> Submit Network Down
+            <button onClick={handleClick} className="btn btn-danger w-100">
+                <i className="bi bi-arrow-down-circle-fill"></i> Submit Network Down
             </button>
             {result && result.success ? (
                 <p>Network down successfully!</p>
