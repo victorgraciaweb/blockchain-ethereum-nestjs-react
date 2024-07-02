@@ -20,6 +20,7 @@ export function AddNetwork() {
 
   const [formData, setFormData] = useState(initialData);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [existsGenesisFile, setExistsGenesisFile] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -48,6 +49,20 @@ export function AddNetwork() {
     fetchData();
   }, [id]);
 
+  useEffect(() => {
+    const checkGenesisFile = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/api/v1/networks/${id}/existsGenesisFile`);
+          setExistsGenesisFile(response.data.success);  
+      } catch (error) {
+        console.error(error);
+      }
+    };
+  
+    checkGenesisFile();
+  }, []);
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -63,9 +78,30 @@ export function AddNetwork() {
     setFormData({ ...formData, alloc });
   };
 
-  const addAllocation = () => {
+  // const addAllocation = () => {
+  //   const alloc = [...formData.alloc, ''];
+  //   setFormData({ ...formData, alloc });
+  // };
+
+  const addAllocation = async () => {
     const alloc = [...formData.alloc, ''];
     setFormData({ ...formData, alloc });
+    
+    try {
+      const response = await axios.post(`http://localhost:3000/api/v1/networks/${id}/addAlloc`);
+      console.log(response.data);
+      const data = await response.data;
+      const newAccount = data.account;
+      console.log(newAccount);
+
+      setFormData(prevFormData => ({
+        ...prevFormData,
+        alloc: prevFormData.alloc.map((account, index) => index === prevFormData.alloc.length - 1 ? newAccount : account)
+      }));
+      
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const removeAllocation = (index) => {
@@ -142,14 +178,14 @@ export function AddNetwork() {
       }
     }
 
-    if (formData.alloc.length === 0) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'There must be at least one account Allocation!'
-      });
-      return;
-    }
+    // if (formData.alloc.length === 0) {
+    //   Swal.fire({
+    //     icon: 'error',
+    //     title: 'Error',
+    //     text: 'There must be at least one account Allocation!'
+    //   });
+    //   return;
+    // }
 
     const nodosFiltered = formData.nodos.map(node => ({
       type: node.type,
@@ -167,13 +203,18 @@ export function AddNetwork() {
       const headers = {
         'Content-Type': 'application/json'
       };
-      let response;
+      let response, response2;
       if (isEditMode) {
         // modo edición
         response = await axios.patch(`http://localhost:3000/api/v1/networks/${id}`, newFormData, { headers });
       } else {
         // modo creación
         response = await axios.post('http://localhost:3000/api/v1/networks', newFormData, { headers });
+        
+        if (response.status >= 200 && response.status < 300)
+          response2 = await axios.post(`http://localhost:3000/api/v1/networks/${response.data.id}/addAlloc`, { headers });
+
+        
       }
       Swal.fire('Success', 'Network saved successfully!', 'success');
       navigate('/list');
@@ -217,16 +258,16 @@ export function AddNetwork() {
             {formData.alloc.map((item, index) => (
               <tr key={index}>
                 <td>
-                  <button type="button" className="btn btn-danger" onClick={() => removeAllocation(index)}>X</button>
+                  <button type="button" className="btn btn-danger" onClick={() => removeAllocation(index)} disabled={existsGenesisFile}>X</button>
                 </td>
                 <td>
-                  <input type="text" className="form-control" value={item} onChange={(e) => handleAllocationChange(e, index)} required/>
+                  <input type="text" className="form-control" value={item} onChange={(e) => handleAllocationChange(e, index)} readOnly/>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <button type="button" className="btn btn-secondary mb-3 w-25" onClick={addAllocation}>Add Allocation</button>
+        <button type="button" className="btn btn-secondary mb-3 w-25" onClick={addAllocation} disabled={existsGenesisFile}>Add Allocation</button>
 
         <h3>Nodes</h3>
         <table className="table">
