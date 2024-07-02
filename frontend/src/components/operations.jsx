@@ -26,13 +26,22 @@ export function Operations() {
               };
               const response = await axios.get(`http://localhost:3000/api/v1/networks/${id}`, { headers });
               const data = response.data;
+              //Si añadimos en el endpoint el status ya no hara falta la siguiente API call
+              try {
+                const statusResponse = await axios.get(`http://localhost:3000/api/v1/networks/${data.id}/isAlive`);
+                data.status = statusResponse.data.success ? "UP" : "DOWN";
+              } catch (statusError) {
+                console.error(`Failed to fetch status for network ID ${data.id}:`, statusError);
+                item.status = "UNKOWN"
+              }
               setFormData({
                 id: data.id,
                 chainId: data.chainId,
                 subnet: data.subnet,
                 ipBootnode: data.ipBootnode,
                 alloc: data.alloc,
-                nodos: data.nodos
+                nodos: data.nodos,
+                status:data.status
               });
             } catch (error) {
               console.error('Error al obtener los datos:', error);
@@ -43,17 +52,6 @@ export function Operations() {
         fetchData();
       }, [id]);
 
-
-    //console.log(id)
-    //Aqui debemos hacer consulta a server para recuperar datos de la red
-    //ahora los simulo con un objeto llamado test
-    // const test = {
-    //     "status":"UP",
-    //     "id":"1234",
-    //     "chain":"chain_XXX",
-    //     "subnet":"192.168.0.1",
-    //     "bootnode":1234
-    //   }
 
   return (
     <div>

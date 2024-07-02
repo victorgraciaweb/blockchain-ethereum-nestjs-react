@@ -43,8 +43,8 @@ export function Restart() {
     return (
         <div className="mx-2">
             <Operations/>
-            <button onClick={handleClick} className="btn btn-success w-100">
-                <i className="bi bi-arrow-up-circle-fill"></i> Submit Network Restart
+            <button onClick={handleClick} className="btn btn-warning w-100">
+                <i className="bi bi-skip-start-btn-fill"></i> Submit Network Restart
             </button>
             {result && result.success ? (
                 <p>Network restart successfully!</p>
