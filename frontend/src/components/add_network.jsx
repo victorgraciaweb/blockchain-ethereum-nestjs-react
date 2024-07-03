@@ -14,7 +14,7 @@ export function AddNetwork() {
     chainId: '',
     subnet: '',
     ipBootnode: '',
-    alloc: [''],
+    alloc: [],
     nodos: [{ id: '', type: '', name: '', ip: '', port: '' }]
   };
 
@@ -52,8 +52,10 @@ export function AddNetwork() {
   useEffect(() => {
     const checkGenesisFile = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/v1/networks/${id}/existsGenesisFile`);
-          setExistsGenesisFile(response.data.success);  
+        if (id) {
+          const response = await axios.get(`http://localhost:3000/api/v1/networks/${id}/existsGenesisFile`);
+          setExistsGenesisFile(response.data.success);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -89,10 +91,11 @@ export function AddNetwork() {
     
     try {
       const response = await axios.post(`http://localhost:3000/api/v1/networks/${id}/addAlloc`);
-      console.log(response.data);
+      
       const data = await response.data;
       const newAccount = data.account;
-      console.log(newAccount);
+      
+      setFormData(prevFormData => ({ ...prevFormData, alloc: [] }));
 
       setFormData(prevFormData => ({
         ...prevFormData,
@@ -267,7 +270,7 @@ export function AddNetwork() {
             ))}
           </tbody>
         </table>
-        <button type="button" className="btn btn-secondary mb-3 w-25" onClick={addAllocation} disabled={existsGenesisFile}>Add Allocation</button>
+        <button type="button" className="btn btn-secondary mb-3 w-25" onClick={addAllocation} disabled={existsGenesisFile || !id?.length}>Add Allocation</button>
 
         <h3>Nodes</h3>
         <table className="table">

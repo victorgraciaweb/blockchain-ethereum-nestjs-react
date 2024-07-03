@@ -193,6 +193,7 @@ export class NetworksService {
     try {
       const networks = await this.findAll();
       const network = networks.find(n => n.id === id);
+      let account: string;
 
       if (!network) {
         return { success: false, account: null };
@@ -206,7 +207,12 @@ export class NetworksService {
         await this.dockerService.writePasswordToFile(networkPath, password);
       }  
       
-      const account = await this.dockerService.createAccount(network, this.networksPath);
+      if (!fs.statSync(path.join(networkPath, 'genesis.json')).isFile()){
+        account = await this.dockerService.createAccount(network, this.networksPath);
+      } else {
+        return { success: false, account: null };
+      }
+
       console.log(account)
       return { success: true, account }
     } catch (error) {
