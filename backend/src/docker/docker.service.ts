@@ -7,74 +7,89 @@ import * as path from "node:path";
 import { exec, execSync } from 'node:child_process';
 import { promisify } from 'util';
 import * as yaml from 'js-yaml';
+import { NetworksService } from 'src/networks/networks.service';
+import { CreateNetworkDto } from 'src/networks/dto/create-network.dto';
 
 
 @Injectable()
 export class DockerService {
-    private readonly networks: any;
     private readonly filePath: string;
     private readonly networksPath: string;
+    private readonly dataPath: string;
 
     constructor(private readonly fileService: FileService) {
-        this.networks = this.loadNetworks();
+        this.networksPath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks');
+        this.dataPath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos');
+        this.filePath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks.json');
     }
 
-    private loadNetworks(): any {
-        const networksPath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks');
-        const filePath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks.json');
-    }
-
-    async createGenesis(networkById: any, networkPath: string): Promise<Genesis> {
+    async createGenesis(network: any, networkPath: string): Promise<Genesis> {
         return new Promise((resolve, reject) => {
-            // Genesis structure example
-            const genesis: Genesis = {
-                "config": {
-                    "chainId": parseInt(networkById.chainId),
-                    "homesteadBlock": 0,
-                    "eip150Block": 0,
-                    "eip155Block": 0,
-                    "eip158Block": 0,
-                    "byzantiumBlock": 0,
-                    "constantinopleBlock": 0,
-                    "petersburgBlock": 0,
-                    "istanbulBlock": 0,
-                    "clique": {
-                        "period": 4,
-                        "epoch": 30000
-                    }
-                },
-                "nonce": "0x0",
-                "timestamp": "0x5e9d4d7c",
+            try{
+                // Parse networks.json
+                const networksFilePath = this.filePath;
+                const networksData = fs.readFileSync(networksFilePath, 'utf-8');
+                const networks = JSON.parse(networksData);
+        
+                if (!network) {
+                    return reject(new Error(`Network with ID ${network.id} not found in networks.json`));
+                }
 
-                "extradata": "0x00000000000000000000000000000000000000000000000000000000000000002235dea2f59600419e3e894d4f2092f0f9c4bb620000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+                // Find network by ID and alloc property
+                const networkById = networks.find((n: any) => n.id === network.id);
+                if (!networkById) {
+                    return reject(new Error(`Network with ID ${network.id} not found in networks.json`));
+                }
 
-                "gasLimit": "0x2fefd8",
-                "difficulty": "0x1",
-
-                "alloc": {
-                    "2235dea2f59600419e3e894d4f2092f0f9c4bb62": {
-                        "balance": "0xad78ebc5ac6200000"
+                // Genesis structure example
+                const genesis: Genesis = {
+                    config: {
+                        chainId: parseInt(network.chainId),
+                        homesteadBlock: 0,
+                        eip150Block: 0,
+                        eip155Block: 0,
+                        eip158Block: 0,
+                        byzantiumBlock: 0,
+                        constantinopleBlock: 0,
+                        petersburgBlock: 0,
+                        istanbulBlock: 0,
+                        clique: {
+                            period: 4,
+                            epoch: 30000
+                        }
                     },
-                    "C077193960479a5e769f27B1ce41469C89Bec299": {
-                        "balance": "0xad78ebc5ac6200000"
-                    }
+                    nonce: '0x0',
+                    timestamp: '0x5e9d4d7c',
+                    extradata: '',
+                    gasLimit: '0x2fefd8',
+                    difficulty: '0x1',
+                    alloc: {}
+                };
+        
+                // Add alloc accounts from network.json to genesis
+                genesis.alloc = networkById.alloc.reduce((acc: { [key: string]: { balance: string } }, i: string) => {
+                    const account = i.startsWith('0x') ? i.slice(2) : i;
+                    acc[account] = { balance: '0xad78ebc5ac6200000' };
+                    return acc;
+                }, {});
+        
+                // Add first account to extradata as signer account
+                const firstAccount = networkById.alloc[0];
+                if (firstAccount) {
+                    let account = firstAccount.startsWith('0x') ? firstAccount.slice(2) : firstAccount;
+                    genesis.extradata = '0x' + '0'.repeat(64) + account.trim() + '0'.repeat(130);
+                }
+        
+                resolve(genesis);
+            } catch (error) {
+                if (error instanceof SyntaxError) {
+                    reject(new Error('Error parsing networks.json: ' + error.message));
+                } else if (error.code === 'ENOENT') {
+                    reject(new Error('networks.json file not found at path: ' + networkPath));
+                } else {
+                    reject(new Error('Error creating genesis: ' + error.message));
                 }
             }
-
-            // Add generated account
-            networkById.alloc.push(fs.readFileSync(`${networkPath}/address.txt`).toString().trim())
-            genesis.alloc = networkById.alloc.reduce((acc, i) => {
-                const account = i.substring(0, 2) == '0x' ? i.substring(2) : i
-                acc[account] = { balance: "0xad78ebc5ac6200000" }
-                return acc
-            }, {})
-
-            // Add Signer account
-            let account = fs.readFileSync(`${networkPath}/address.txt`).toString()
-            account = account.substring(0, 2) == '0x' ? account.substring(2) : account
-
-            genesis.extradata = "0x" + "0".repeat(64) + account.trim() + "0".repeat(130)
-            resolve(genesis);
         });
     }
 
@@ -125,19 +140,63 @@ export class DockerService {
         }
     }
 
-    async createBootnodeAccount(networkPath: string): Promise<void> {
+    async createAccount(network: any, networksPath: string): Promise<string> {
         try {
             const execAsync = promisify(exec);
+
+            if (!network) {
+                throw new Error('Network not found');
+            }
+
+            if (!networksPath) {
+                throw new Error('Networks path not found');
+            }
+
+            const networkPath: string = path.join(networksPath, `${network.id}`);
+
             const cmd = `docker run -e IP="@0.0.0.0:0?discport=30301" \
                 --rm -v ${networkPath}:/root ethereum/client-go:alltools-v1.13.8 \
-                sh -c "geth account new --password /root/password.txt --datadir /root | grep 'of the key' | cut -c30-  \
-                > /root/address.txt  \
-                &&  bootnode -genkey /root/bootnode.key -writeaddress > /root/bootnode \
-                &&  chown $(id -u):$(id -g) /root/address.txt /root/bootnode /root/bootnode.key"`;
+                sh -c "geth account new --password /root/password.txt --datadir /root | grep 'of the key' | cut -c30-"`;
+    
+            const { stdout } = await execAsync(cmd);
+    
+            // Gets account string from stdout
+            let account = stdout.trim();
+            if (account.startsWith('0x')) {
+                account = account.slice(2);
+            }
+            
+            // Add new account to file networks.json
+            // Read file networks.json
+            const networksData = fs.readFileSync(this.filePath, 'utf-8');
+            const networks = JSON.parse(networksData);
 
-            await execAsync(cmd);
+            // Find network by ID and updates 'alloc' property
+            const networkById = networks.find((n: any) => n.id === network.id);
+
+            if (networkById) {
+                networkById.alloc.push(account);
+                fs.writeFileSync(this.filePath, JSON.stringify(networks, null, 2), 'utf-8');
+            } else {
+                throw new Error(`Network with ID ${networkById} not found in networks.json`);
+            }
+
+            return account;
         } catch (error) {
-            throw new Error(`Error creating bootnode account: ${error.message}`);
+            throw new Error(`Error creating bootnode key: ${error.message}`);
+        }
+    }
+
+    async createBootnodeKey(networkPath: string): Promise<void> {
+        try {
+            const execAsync = promisify(exec);
+            const bootnodeCmd = `docker run --rm -v ${networkPath}:/root ethereum/client-go:alltools-v1.13.8 \
+                sh -c "bootnode -genkey /root/bootnode.key -writeaddress > /root/bootnode \
+                && chown $(id -u):$(id -g) /root/bootnode /root/bootnode.key"`;
+    
+            await execAsync(bootnodeCmd);
+        } catch (error) {
+            throw new Error(`Error creating bootnode key: ${error.message}`);
         }
     }
 
@@ -317,8 +376,8 @@ export class DockerService {
             BOOTNODE=${bootnode}
             SUBNET=${network.subnet}
             IPBOOTNODE=${network.ipBootnode}
-            ETHERBASE=${fs.readFileSync(`${pathNetwork}/address.txt`).toString().trim()}
-            UNLOCK=${fs.readFileSync(`${pathNetwork}/address.txt`).toString().trim()}
+            ETHERBASE=${network.alloc[0]}
+            UNLOCK=${network.alloc[0]}
             `
             return file
         } catch (error) {
@@ -464,10 +523,9 @@ export class DockerService {
         }
     }
 
-    async createNetworkDirectories(network: any, networkPath: string) {
+    async createNetworkDirectories(networkPath: string) {
         await this.fileService.createDirectory(networkPath);
         await this.fileService.createDirectory(path.join(networkPath, 'keystore'));
-        await this.fileService.createDirectory(path.join(networkPath, network.id));
     }
       
     async writePasswordToFile(networkPath: string, password: string) {

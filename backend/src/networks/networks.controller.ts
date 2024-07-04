@@ -47,9 +47,18 @@ export class NetworksController {
      return this.networksService.restart(id);
    }
 
+   @Post(':id/addAlloc')
+   addAlloc(@Param('id') id: string) {
+     return this.networksService.addAlloc(id);
+   }
+
    @Get(':id/isAlive')
    isAlive(@Param('id') id: string) {
      return this.networksService.isAlive(id);
    }
 
+   @Get(':id/existsGenesisFile')
+   existsGenesisFile(@Param('id') id: string) {
+     return this.networksService.existsGenesisFile(id);
+   }
 }

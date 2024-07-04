@@ -95,7 +95,7 @@ export function ListNetworks() {
                       symbol: "ETH",
                       decimals: 18,
                     },
-                    rpcUrls: ["https://localhost:8545"],
+                    rpcUrls: ["http://localhost:8486"],
                     blockExplorerUrls: null,
                   },
                 ],

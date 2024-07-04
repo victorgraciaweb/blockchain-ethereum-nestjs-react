@@ -38,7 +38,7 @@ export class NetworksService {
     networks.push(createNetworkDto);
 
     await this.fileService.writeFile(this.filePath, networks);
-
+    
     return createNetworkDto;
   }
 
@@ -114,11 +114,8 @@ export class NetworksService {
         networkPath = path.join(this.networksPath, id);
       }
 
-      if (!(await this.fileService.directoryExists(networkPath))) {
-        await this.dockerService.createNetworkDirectories(network, networkPath);
-        const password = this.dockerService.createPassword();
-        await this.dockerService.writePasswordToFile(networkPath, password);
-        await this.dockerService.createBootnodeAccount(networkPath);
+      if (!fs.existsSync(path.join(networkPath, 'genesis.json'))) {
+        await this.dockerService.createBootnodeKey(networkPath);
         const genesis = await this.dockerService.createGenesis(network, networkPath);
         await this.dockerService.writeGenesisToFile(networkPath, genesis);
     
@@ -189,6 +186,51 @@ export class NetworksService {
       }
       console.error('Error checking network status:', error);
       return { success: false };
+    }
+  }
+
+  async addAlloc(id: string): Promise<{success: boolean; account: any}> {
+    try {
+      const networks = await this.findAll();
+      const network = networks.find(n => n.id === id);
+      let account: string;
+
+      if (!network) {
+        return { success: false, account: null };
+      }
+
+      const networkPath = path.join(this.networksPath, network.id);
+
+      if (!(await this.fileService.directoryExists(networkPath))) {
+        await this.dockerService.createNetworkDirectories(networkPath);
+        const password = this.dockerService.createPassword();
+        await this.dockerService.writePasswordToFile(networkPath, password);
+      }  
+      
+      if (!fs.statSync(path.join(networkPath, 'genesis.json')).isFile()){
+        account = await this.dockerService.createAccount(network, this.networksPath);
+      } else {
+        return { success: false, account: null };
+      }
+
+      console.log(account)
+      return { success: true, account }
+    } catch (error) {
+      console.log(error)
+      return { success: false, account: null };
+    }
+  }
+
+  async existsGenesisFile(id: string): Promise<{success: boolean}> {
+    try {
+      const networks = await this.findAll();
+      const network = networks.find(n => n.id === id);
+      const networkPath = path.join(this.networksPath, network.id);
+      
+      fs.statSync(path.join(networkPath, 'genesis.json')).isFile()
+      return { success: true }
+    } catch (error) {
+      return { success: false }
     }
   }
 }
