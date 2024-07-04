@@ -207,7 +207,7 @@ export class NetworksService {
         await this.dockerService.writePasswordToFile(networkPath, password);
       }  
       
-      if (!fs.statSync(path.join(networkPath, 'genesis.json')).isFile()){
+      if (!fs.existsSync(path.join(networkPath, 'genesis.json'))){
         account = await this.dockerService.createAccount(network, this.networksPath);
       } else {
         return { success: false, account: null };
@@ -227,7 +227,8 @@ export class NetworksService {
       const network = networks.find(n => n.id === id);
       const networkPath = path.join(this.networksPath, network.id);
       
-      fs.statSync(path.join(networkPath, 'genesis.json')).isFile()
+      fs.existsSync(path.join(networkPath, 'genesis.json'))
+      
       return { success: true }
     } catch (error) {
       return { success: false }

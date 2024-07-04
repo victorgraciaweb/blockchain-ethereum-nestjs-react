@@ -475,24 +475,27 @@ export class DockerService {
             const networkPath = path.join(networksPath, network.id);
             const servicesList = network.nodos.map(nodo => nodo.name);
             
-            // Get the list of running services
-            const services = await this.getRunningDockerComposeServices(networkPath);
+            // // Get the list of running services
+            // const services = await this.getRunningDockerComposeServices(networkPath);
 
-            // Stop services
-            if (Array.isArray(services)) {
-                const stopPromises = services.map(service => {
-                    if (!servicesList.includes(service)) {
-                        if (service !== "geth-bootnode")
-                            return this.stopAndRemoveDockerComposeService(service, networkPath);
-                    }
-                    return Promise.resolve();
-                });
+            // // Stop deleted services
+            // if (Array.isArray(services)) {
+            //     const stopPromises = services.map(service => {
+            //         if (!servicesList.includes(service)) {
+            //             if (service !== "geth-bootnode")
+            //                 return this.stopAndRemoveDockerComposeService(service, networkPath);
+            //         }
+            //         return Promise.resolve();
+            //     });
             
-                await Promise.all(stopPromises);
-            } else {
-                throw new Error(`Error stopping services: ${services.error.message}`);
-            }
-    
+            //     await Promise.all(stopPromises);
+            // } else {
+            //     throw new Error(`Error stopping services: ${services.error.message}`);
+            // }
+            
+            // Stop all services
+            await this.stopAllDockerComposeServices(networkPath);
+
             // Update docker-compose file
             const result = this.updateDockerCompose(network, networkPath);
             if ('error' in result) {
@@ -503,19 +506,22 @@ export class DockerService {
             const yamlStr = yaml.dump(result.yamlStr, { indent: 2 });
             await this.writeDockerComposeToFile(networkPath, yamlStr);
 
-            // Start services
-            if (Array.isArray(services)) {
-                const stopPromises = servicesList.map(service => {
-                    if (!services.includes(service) && service !== "geth-bootnode") {
-                        return this.startDockerComposeService(service, networkPath);
-                    }
-                    return Promise.resolve();
-                });
+            // Start all services
+            await this.startAllDockerComposeServices(networkPath);
             
-                await Promise.all(stopPromises);
-            } else {
-                throw new Error('Error starting services');
-            }
+            // // Start new services
+            // if (Array.isArray(services)) {
+            //     const stopPromises = servicesList.map(service => {
+            //         if (!services.includes(service) && service !== "geth-bootnode") {
+            //             return this.startDockerComposeService(service, networkPath);
+            //         }
+            //         return Promise.resolve();
+            //     });
+            
+            //     await Promise.all(stopPromises);
+            // } else {
+            //     throw new Error('Error starting services');
+            // }
     
             return `All services updated and restarted`;
         } catch (error) {

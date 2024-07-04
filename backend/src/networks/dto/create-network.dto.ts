@@ -27,7 +27,7 @@ export class CreateNetworkDto {
 
     @IsArray()
     // @IsNotEmpty({ each: true })
-    @ArrayMinSize(1)
+    // @ArrayMinSize(1)
     @Validate(IsEthereumAddressConstraint, { each: true })
     alloc: string[];
 
