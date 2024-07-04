@@ -4,8 +4,7 @@ DApp developed in Ethereum Blockchain, Backend with NestJS and Frotend React
 
 ## Links
 
-You can visit Frontend, Backend and Blockchain projects README.md:
+You can visit Frontend and Backend projects README.md:
 
-- [Frontend](https://github.com/victorgraciaweb/blockchain-ethereum-nestjs-react/blob/main/backend/README.md)
+- [Frontend](https://github.com/victorgraciaweb/blockchain-ethereum-nestjs-react/blob/main/frontend/README.md)
 - [Backend](https://github.com/victorgraciaweb/blockchain-ethereum-nestjs-react/blob/main/backend/README.md)
-- [Blockchain](https://github.com/victorgraciaweb/blockchain-ethereum-nestjs-react/blob/main/blockchain/README.md)
