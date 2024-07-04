@@ -1,4 +1,10 @@
-# Blockchain files 
+<p align="center">
+  <a href="http://nestjs.com/" target="blank"><img src="assets/logo.webp" width="200" alt="Nest Logo" /></a>
+</p>
 
-## Check blockNumber
-docker exec -it 71 /bin/sh -c "geth --exec eth.blockNumber attach"
+# Ejecutar en desarrollo
+
+Hacer copia de fichero networks.data
+```
+cp networks.data networks.json
+```
