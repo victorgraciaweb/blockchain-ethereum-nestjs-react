@@ -234,4 +234,48 @@ export class NetworksService {
       return { success: false }
     }
   }
+
+  
+  async faucet(id: string): Promise<any> {
+    try {
+      const networks = await this.findAll();
+      const network = networks.find(n => n.id === id);
+
+      if (!network) {
+        throw new NotFoundException(`Network not found with id: ${id}`);
+      }
+
+      console.log(network)
+
+      // Get the directory, address, and password
+      const pathNetwork = path.join('./networks', network.id);
+      const address = fs.readFileSync(`${pathNetwork}/address.txt`).toString().trim();
+      const password = fs.readFileSync(`${pathNetwork}/password.txt`).toString().trim();
+      const files = fs.readdirSync(`${pathNetwork}/keystore`);
+
+      // Get the RPC port
+      const port = network.nodos.find(i => i.type == 'rpc').port;
+
+      // Create provider and signer
+      const provider = new ethers.JsonRpcProvider(`http://localhost:${port}`);
+      const json = fs.readFileSync(path.join(pathNetwork, 'keystore', files[0])).toString();
+      const wallet = await ethers.Wallet.fromEncryptedJson(json, password);
+      const signer = wallet.connect(provider);
+
+      // Send transaction
+      const tx = await signer.sendTransaction({
+        from: address,
+        to: account,
+        value: ethers.parseUnits('10', 18)
+      });
+
+      // Return transaction hash
+      return { hash: tx.hash };
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new Error(`Error processing faucet request with id: ${id}`);
+    }
+  }
 }

@@ -61,4 +61,9 @@ export class NetworksController {
    existsGenesisFile(@Param('id') id: string) {
      return this.networksService.existsGenesisFile(id);
    }
+
+   @Post(':id/faucet')
+   faucet(@Param('id') id: string) {
+     return this.networksService.faucet(id);
+   }
 }
