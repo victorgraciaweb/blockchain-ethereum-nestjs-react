@@ -156,7 +156,8 @@ export class DockerService {
 
             const cmd = `docker run -e IP="@0.0.0.0:0?discport=30301" \
                 --rm -v ${networkPath}:/root ethereum/client-go:alltools-v1.13.8 \
-                sh -c "geth account new --password /root/password.txt --datadir /root | grep 'of the key' | cut -c30-"`;
+                sh -c "geth account new --password /root/password.txt --datadir /root | grep 'of the key' | cut -c30- \
+                &&  chown $(id -u):$(id -g) /root/keystore"`;
     
             const { stdout } = await execAsync(cmd);
     
@@ -183,7 +184,7 @@ export class DockerService {
 
             return account;
         } catch (error) {
-            throw new Error(`Error creating bootnode key: ${error.message}`);
+            throw new Error(`Error creating alloc account: ${error.message}`);
         }
     }
 
@@ -508,7 +509,7 @@ export class DockerService {
 
             // Start all services
             await this.startAllDockerComposeServices(networkPath);
-            
+
             // // Start new services
             // if (Array.isArray(services)) {
             //     const stopPromises = servicesList.map(service => {

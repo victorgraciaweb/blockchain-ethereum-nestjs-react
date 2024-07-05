@@ -206,14 +206,13 @@ export class NetworksService {
         const password = this.dockerService.createPassword();
         await this.dockerService.writePasswordToFile(networkPath, password);
       }  
-      
-      if (!fs.existsSync(path.join(networkPath, 'genesis.json'))){
+
+      if (!fs.existsSync(path.join(networkPath, 'genesis.json'))) {
         account = await this.dockerService.createAccount(network, this.networksPath);
       } else {
         return { success: false, account: null };
       }
 
-      console.log(account)
       return { success: true, account }
     } catch (error) {
       console.log(error)
@@ -227,10 +226,12 @@ export class NetworksService {
       const network = networks.find(n => n.id === id);
       const networkPath = path.join(this.networksPath, network.id);
       
-      fs.existsSync(path.join(networkPath, 'genesis.json'))
+      if (fs.existsSync(path.join(networkPath, 'genesis.json'))) 
+        return { success: true }  
       
-      return { success: true }
+      return { success: false }
     } catch (error) {
+      console.log(error)
       return { success: false }
     }
   }
