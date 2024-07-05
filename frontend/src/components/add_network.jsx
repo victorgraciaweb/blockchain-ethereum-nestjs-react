@@ -94,8 +94,6 @@ export function AddNetwork() {
       
       const data = await response.data;
       const newAccount = data.account;
-      
-      setFormData(prevFormData => ({ ...prevFormData, alloc: [] }));
 
       setFormData(prevFormData => ({
         ...prevFormData,
@@ -270,7 +268,7 @@ export function AddNetwork() {
             ))}
           </tbody>
         </table>
-        <button type="button" className="btn btn-secondary mb-3 w-25" onClick={addAllocation} disabled={existsGenesisFile || !id?.length}>Add Allocation</button>
+        <button type="button" className="btn btn-secondary mb-3 w-25" onClick={addAllocation} disabled={existsGenesisFile || !isEditMode}>Add Allocation</button>
 
         <h3>Nodes</h3>
         <table className="table">
