@@ -9,7 +9,9 @@ import { Network } from './interfaces/network.interface';
 import { FileService } from 'src/file/file.service';
 import { DockerService } from 'src/docker/docker.service';
 import { PassThrough } from 'stream';
-import { ethers } from 'ethers';
+import { ethers, TransactionResponse } from 'ethers';
+import { CreateFaucetDto } from './dto/create-faucet.dto';
+import { Transaction } from './interfaces/transaction.interface';
 
 @Injectable()
 export class NetworksService {
@@ -236,8 +238,7 @@ export class NetworksService {
     }
   }
 
-  
-  async faucet(id: string): Promise<any> {
+  async faucet(id: string, createFaucetDto: CreateFaucetDto): Promise<TransactionResponse> {
     try {
       const networks = await this.findAll();
       const network = networks.find(n => n.id === id);
@@ -246,11 +247,8 @@ export class NetworksService {
         throw new NotFoundException(`Network not found with id: ${id}`);
       }
 
-      console.log(network)
-
       // Get the directory, address, and password
-      const pathNetwork = path.join('./networks', network.id);
-      const address = fs.readFileSync(`${pathNetwork}/address.txt`).toString().trim();
+      const pathNetwork = path.join(this.networksPath, network.id);
       const password = fs.readFileSync(`${pathNetwork}/password.txt`).toString().trim();
       const files = fs.readdirSync(`${pathNetwork}/keystore`);
 
@@ -265,13 +263,12 @@ export class NetworksService {
 
       // Send transaction
       const tx = await signer.sendTransaction({
-        from: address,
-        to: account,
-        value: ethers.parseUnits('10', 18)
+        to: createFaucetDto.address,
+        value: ethers.parseUnits(createFaucetDto.quantity, 18)
       });
 
-      // Return transaction hash
-      return { hash: tx.hash };
+      return tx;
+
     } catch (error) {
       if (error instanceof NotFoundException) {
         throw error;
