@@ -7,7 +7,7 @@ export class TransactionsController {
 
   @Get()
   findAllByBlock(@Param('networkId') networkId: string, @Param('blockId') blockId: string) {
-    return this.transactionsService.findAllByBlock(blockId);
+    return this.transactionsService.findAllByBlock(networkId, blockId);
   }
 
   @Get(':id')

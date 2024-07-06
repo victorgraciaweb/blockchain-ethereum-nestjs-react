@@ -7,6 +7,7 @@ import { DockerModule } from 'src/docker/docker.module';
 @Module({
   controllers: [NetworksController],
   providers: [NetworksService],
+  exports: [NetworksService],
   imports: [FileModule, forwardRef(() => DockerModule)],
 })
 export class NetworksModule {}
