@@ -11,7 +11,6 @@ import { DockerService } from 'src/docker/docker.service';
 import { PassThrough } from 'stream';
 import { ethers, TransactionResponse } from 'ethers';
 import { CreateFaucetDto } from './dto/create-faucet.dto';
-import { Transaction } from './interfaces/transaction.interface';
 
 @Injectable()
 export class NetworksService {
