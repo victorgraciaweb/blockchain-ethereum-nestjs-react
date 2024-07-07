@@ -18,7 +18,8 @@ npm i -g @nestjs/cli
 ```
 yarn start:dev
 ```
-
+8. Importar colección con Endpoints en Postman (Opcional) 
+- `blockchain.postman_collection.json`
 
 ## Stack usado
 * Nest

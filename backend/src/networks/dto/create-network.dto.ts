@@ -26,8 +26,7 @@ export class CreateNetworkDto {
     ipBootnode: string;
 
     @IsArray()
-    // @IsNotEmpty({ each: true })
-    // @ArrayMinSize(1)
+    @IsOptional()
     @Validate(IsEthereumAddressConstraint, { each: true })
     alloc: string[];
 

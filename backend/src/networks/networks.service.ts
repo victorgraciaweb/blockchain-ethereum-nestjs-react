@@ -9,7 +9,8 @@ import { Network } from './interfaces/network.interface';
 import { FileService } from 'src/file/file.service';
 import { DockerService } from 'src/docker/docker.service';
 import { PassThrough } from 'stream';
-import { ethers } from 'ethers';
+import { ethers, TransactionResponse } from 'ethers';
+import { CreateFaucetDto } from './dto/create-faucet.dto';
 
 @Injectable()
 export class NetworksService {
@@ -233,6 +234,45 @@ export class NetworksService {
     } catch (error) {
       console.log(error)
       return { success: false }
+    }
+  }
+
+  async faucet(id: string, createFaucetDto: CreateFaucetDto): Promise<TransactionResponse> {
+    try {
+      const networks = await this.findAll();
+      const network = networks.find(n => n.id === id);
+
+      if (!network) {
+        throw new NotFoundException(`Network not found with id: ${id}`);
+      }
+
+      // Get the directory, address, and password
+      const pathNetwork = path.join(this.networksPath, network.id);
+      const password = fs.readFileSync(`${pathNetwork}/password.txt`).toString().trim();
+      const files = fs.readdirSync(`${pathNetwork}/keystore`);
+
+      // Get the RPC port
+      const port = network.nodos.find(i => i.type == 'rpc').port;
+
+      // Create provider and signer
+      const provider = new ethers.JsonRpcProvider(`http://localhost:${port}`);
+      const json = fs.readFileSync(path.join(pathNetwork, 'keystore', files[0])).toString();
+      const wallet = await ethers.Wallet.fromEncryptedJson(json, password);
+      const signer = wallet.connect(provider);
+
+      // Send transaction
+      const tx = await signer.sendTransaction({
+        to: createFaucetDto.address,
+        value: ethers.parseUnits(createFaucetDto.quantity, 18)
+      });
+
+      return tx;
+
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new Error(`Error processing faucet request with id: ${id}`);
     }
   }
 }

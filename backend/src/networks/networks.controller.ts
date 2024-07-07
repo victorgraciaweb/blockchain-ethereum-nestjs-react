@@ -2,6 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { NetworksService } from './networks.service';
 import { CreateNetworkDto } from './dto/create-network.dto';
 import { UpdateNetworkDto } from './dto/update-network.dto';
+import { CreateFaucetDto } from './dto/create-faucet.dto';
 
 @Controller('networks')
 export class NetworksController {
@@ -60,5 +61,10 @@ export class NetworksController {
    @Get(':id/existsGenesisFile')
    existsGenesisFile(@Param('id') id: string) {
      return this.networksService.existsGenesisFile(id);
+   }
+
+   @Post(':id/faucet')
+   faucet(@Param('id') id: string, @Body() createFaucetDto: CreateFaucetDto) {
+     return this.networksService.faucet(id, createFaucetDto);
    }
 }
