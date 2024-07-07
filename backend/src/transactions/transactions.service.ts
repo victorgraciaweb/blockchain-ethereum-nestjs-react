@@ -13,7 +13,6 @@ export class TransactionsService {
 
     const provider = new ethers.JsonRpcProvider(`http://localhost:${port}`);
 
-
     const blockNumber = parseInt(blockId);
     if (isNaN(blockNumber)) {
       throw new NotFoundException('Invalid blockId. Must be a number.');
@@ -35,8 +34,17 @@ export class TransactionsService {
     return detailedTransactions;
   }
 
-  async findById(id: string) {
-    // TODO
-    return "ok";
+  async findById(networkId: string, blockId: string, transactionId: string) {
+    const network = await this.networksService.findOneById(networkId);
+    const port = network.nodos.find(i => i.type == 'rpc').port
+
+    const provider = new ethers.JsonRpcProvider(`http://localhost:${port}`);
+
+    try {
+      const transaction = await provider.getTransaction(transactionId);
+      return transaction;
+    } catch (error) {
+      throw new Error('Error fetching transaction: ' + error.message);
+    }
   }
 }

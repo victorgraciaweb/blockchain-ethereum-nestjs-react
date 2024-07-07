@@ -6,12 +6,19 @@ export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Get()
-  findAllByBlock(@Param('networkId') networkId: string, @Param('blockId') blockId: string) {
+  findAllByBlock(
+    @Param('networkId') networkId: string, 
+    @Param('blockId') blockId: string
+  ) {
     return this.transactionsService.findAllByBlock(networkId, blockId);
   }
 
-  @Get(':id')
-  findById(@Param('id') id: string) {
-    return this.transactionsService.findById(id);
+  @Get(':transactionId')
+  findById(
+    @Param('networkId') networkId: string, 
+    @Param('blockId') blockId: string, 
+    @Param('transactionId') transactionId: string
+  ) {
+    return this.transactionsService.findById(networkId, blockId, transactionId);
   }
 }

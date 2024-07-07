@@ -1,0 +1,136 @@
+{
+	"info": {
+		"_postman_id": "0ddeb96d-d8af-4d2c-94a5-c7a105e422c8",
+		"name": "Master Codecrypto",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "31951083"
+	},
+	"item": [
+		{
+			"name": "Get Networks",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000/api/v1/networks"
+			},
+			"response": []
+		},
+		{
+			"name": "Create Network",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"id\": \"uuuuuuuuuuuuufuu\",\n  \"chainId\": \"9999d99\",\n  \"subnet\": \"172.16.100.0/24\",\n  \"ipBootnode\": \"172.16.100.10\",\n  \"alloc\": [\n    \"0x742d35Cc6634C0532925a3b844Bc454e4438f44e\",\n    \"0xf66BdcB1DfC416c9428c2E6bFF1386b5E258870a\"\n  ],\n  \"nodos\": [\n    {\n      \"type\": \"rpc\",\n      \"name\": \"rpc1\",\n      \"ip\": \"172.16.100.20\",\n      \"port\": \"8545\"\n    },\n    {\n      \"type\": \"miner\",\n      \"name\": \"miner1\",\n      \"ip\": \"172.16.100.30\",\n      \"port\": \"\"\n    },\n    {\n      \"type\": \"normal\",\n      \"name\": \"normal1\",\n      \"ip\": \"172.16.100.40\",\n      \"port\": \"\"\n    },\n    {\n      \"type\": \"normal\",\n      \"name\": \"normal1\",\n      \"ip\": \"172.16.100.40\",\n      \"port\": \"\"\n    }\n  ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:3000/api/v1/networks"
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Network",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "localhost:3000/api/v1/networks/uuuu"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Network By Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000/api/v1/networks/3yyyysssssy"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Network",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"ddddddd\",\n    \"chainId\": \"555555\",\n    \"subnet\": \"172.16.100.0/24\",\n    \"ipBootnode\": \"172.16.100.10\",\n    \"alloc\": [\n        \"0x742d35Cc6634C0532925a3b844Bc454e4438f44e\"\n    ],\n    \"nodos\": [\n        {\n            \"type\": \"rpc\",\n            \"name\": \"rpc1\",\n            \"ip\": \"172.16.100.20\",\n            \"port\": \"8545\"\n        },\n        {\n            \"type\": \"miner\",\n            \"name\": \"miner1\",\n            \"ip\": \"172.16.100.30\",\n            \"port\": \"8546\"\n        },\n        {\n            \"type\": \"normal\",\n            \"name\": \"normal1\",\n            \"ip\": \"172.16.100.40\",\n            \"port\": \"\"\n        },\n        {\n            \"type\": \"miner\",\n            \"name\": \"miner1\",\n            \"ip\": \"172.16.100.30\",\n            \"port\": \"8546\"\n        },\n        {\n            \"type\": \"normal\",\n            \"name\": \"normal1\",\n            \"ip\": \"172.16.100.40\",\n            \"port\": \"\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:3000/api/v1/networks/ddddddd"
+			},
+			"response": []
+		},
+		{
+			"name": "Up Network",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "localhost:3000/api/v1/networks/777777/up"
+			},
+			"response": []
+		},
+		{
+			"name": "Down Network",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": "localhost:3000/api/v1/networks/777777/down"
+			},
+			"response": []
+		},
+		{
+			"name": "Faucet Network",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"address\": \"0xd681890f50A989c09a80c52A0ca34feADbac3C74\",\n  \"quantity\": \"34\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:3000/api/v1/networks/Test1/faucet"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Blocks By Network",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000/api/v1/networks/1/blocks"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Transactions By Block",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000/api/v1/networks/Test2/blocks/2647/transactions/"
+			},
+			"response": []
+		},
+		{
+			"name": "Get Transaction By Id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": "localhost:3000/api/v1/networks/1/blocks/34/transactions/2"
+			},
+			"response": []
+		}
+	]
+}
