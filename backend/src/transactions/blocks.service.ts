@@ -14,7 +14,7 @@ export class BlocksService {
     const provider = new ethers.JsonRpcProvider(`http://localhost:${port}`);
 
     const latestBlockNumber = await provider.getBlockNumber();
-    const NumBlocks = 350;
+    const NumBlocks = 70;
     const blocks = [];
     for (let i = latestBlockNumber - NumBlocks; i <= latestBlockNumber; i++) {
       const block = await provider.getBlock(i);

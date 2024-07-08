@@ -5,14 +5,10 @@ import Swal from 'sweetalert2';
 import { ethers } from 'ethers';
 
 export function Transfer() {
-    console.log('Ethers:', ethers);
-    const { id } = useParams();
-    console.log(id);
     const [account, setAccount] = useState('');
     const [metamaskAvailable, setMetamaskAvailable] = useState(true);
 
     useEffect(() => {
-        console.log(typeof window.ethereum);
         if (typeof window.ethereum !== 'undefined') {
             window.ethereum.request({
                 method: 'eth_requestAccounts'
@@ -26,39 +22,48 @@ export function Transfer() {
             });
         } else {
             setMetamaskAvailable(false);
-            Swal.fire('Error', 'MetaMask is not installed. Please install it to use this feature.', 'error');
+            Swal.fire({
+                title: 'MetaMask is not available',
+                text: 'Please install MetaMask to use this feature.',
+                icon: 'warning',
+            });
         }
     }, []);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
         const fromAddress = document.getElementById('from').value;
         const toAddress = document.getElementById('to').value;
-        const amount = document.getElementById('amount').value;
-        console.log(toAddress);
-        console.log(amount);
+        const amount = Number(document.getElementById('amount').value);
 
-        const weiAmount = ethers.utils.parseUnits(amount.toString(), 'ether');
-        const txParams = {
-            to: toAddress,
-            from: fromAddress,
-            value: weiAmount._hex
-        };
-        console.log(txParams);
+        // console.log("fromAddress",fromAddress)
+        // console.log("toAddress",toAddress)
+        // console.log("amount",Number(amount).toString(16))
 
         try {
-            const tx = await ethereum.request({
-                method: "eth_sendTransaction",
-                params: [txParams]
+            ;
+            const txParams = {
+                to: toAddress,
+                from: fromAddress,
+                value:`0x${(Number(amount)*1E18).toString(16)}`
+            };
+            // console.log("Params", txParams);
+
+            // Enviar la transacción
+            const tx = await window.ethereum.request({
+                method: 'eth_sendTransaction',
+                params: [txParams],
             });
-            Swal.fire('Success', `Transaction sent: ${tx.hash}`, 'success');
+   
+            Swal.fire('Success', `Transaction sent: ${tx}`, 'success');
         } catch (error) {
             Swal.fire('Error', `Transaction failed: ${error.message}`, 'error');
         }
     };
 
     return (
-        <div className="mx-2">
+        <div className="mx-3">
             <Operations />
             <h2>Transfer</h2>
             <div className="card p-4 shadow">
@@ -81,10 +86,7 @@ export function Transfer() {
                         </button>
                     </form>
                 ) : (
-                    <div>
-                        <h2>Transfer</h2>
-                        <p>MetaMask is required to use the transfer feature. Please install MetaMask and try again.</p>
-                    </div>
+                    <div class="alert alert-danger" role="alert">MetaMask is required to use the faucet. Please install MetaMask and try again.</div>
                 )}
             </div>
         </div>

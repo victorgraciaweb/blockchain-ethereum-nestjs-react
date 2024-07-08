@@ -77,25 +77,29 @@ export function ListNetworks() {
 
 
   const handleConnectMetamask = async (network) => {
+    let rpcPort = network.nodos.find(server => server.type === 'rpc').port;
+    console.log("puertoRPC", rpcPort);
+
     const provider = await detectEthereumProvider();
     try {
       const response = await axios.get(`http://localhost:3000/api/v1/networks/${network.id}/isAlive`);
       console.log ("ESTADO RED ", network.id , response.data.success)
       if (response.data.success) {
         if (provider) {
+          
             try {
               await provider.request({
                 method: 'wallet_addEthereumChain',
                 params: [
                   {
-                    chainId: `0x${network.chainId.toString(16)}`,
+                    chainId: `0x${Number(network.chainId).toString(16)}`,
                     chainName: network.id,
                     nativeCurrency: {
                       name: "Codecrypto-project",
                       symbol: "ETH",
                       decimals: 18,
                     },
-                    rpcUrls: ["http://localhost:8486"],
+                    rpcUrls: [`http://localhost:${rpcPort}`],
                     blockExplorerUrls: null,
                   },
                 ],
