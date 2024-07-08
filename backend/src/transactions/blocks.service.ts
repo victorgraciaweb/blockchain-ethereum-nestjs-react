@@ -13,13 +13,16 @@ export class BlocksService {
     
     const provider = new ethers.JsonRpcProvider(`http://localhost:${port}`);
 
-    const latestBlockNumber = await provider.getBlockNumber();
-    const NumBlocks = 70;
     const blocks = [];
-    for (let i = latestBlockNumber - NumBlocks; i <= latestBlockNumber; i++) {
+    const latestBlockNumber = await provider.getBlockNumber();
+    const numBlocksShowing = 350;
+
+    // Iteramos desde el último bloque hasta el bloque número (latestBlockNumber - 349)
+    for (let i = latestBlockNumber; i > latestBlockNumber - numBlocksShowing; i--) {
       const block = await provider.getBlock(i);
       blocks.push(block);
     }
+
     return blocks;
   }
 }
