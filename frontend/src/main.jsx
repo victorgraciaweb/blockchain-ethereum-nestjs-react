@@ -12,6 +12,8 @@ import { Transfer } from './components/transfer';
 import { Up } from './components/up';
 import { Down } from './components/down';
 import { Restart } from './components/restart';
+import { Blocks } from './components/block';
+import {Transactions} from './components/transactions'
 
 
 
@@ -30,6 +32,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/up/:id" element={<Up />} />
           <Route path="/down/:id" element={<Down />} />
           <Route path="/restart/:id" element={<Restart />} />
+          <Route path="/blocks/:id" element={<Blocks />} />
+          <Route path="/blocks/:id/transactions/:blockNumber" element={<Transactions />} />
       </Routes>
     </BrowserRouter>
 );

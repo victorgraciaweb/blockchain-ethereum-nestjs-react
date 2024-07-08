@@ -5,7 +5,6 @@ import Swal from 'sweetalert2';
 import { ethers } from 'ethers';
 
 export function Transfer() {
-    const { id } = useParams();
     const [account, setAccount] = useState('');
     const [metamaskAvailable, setMetamaskAvailable] = useState(true);
 
