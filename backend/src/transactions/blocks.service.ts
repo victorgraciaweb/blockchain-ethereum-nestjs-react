@@ -5,24 +5,33 @@ import { NetworksService } from 'src/networks/networks.service';
 @Injectable()
 export class BlocksService {
 
-  constructor(private readonly networksService: NetworksService) {}
+  constructor(private readonly networksService: NetworksService) { }
 
   async findAllByIdNetwork(networkId: string): Promise<any[]> {
     const network = await this.networksService.findOneById(networkId);
     const port = network.nodos.find(i => i.type == 'rpc').port
-    
+
     const provider = new ethers.JsonRpcProvider(`http://localhost:${port}`);
 
-    const blocks = [];
-    const latestBlockNumber = await provider.getBlockNumber();
-    const numBlocksShowing = 350;
 
-    // Iteramos desde el último bloque hasta el bloque número (latestBlockNumber - 349)
-    for (let i = latestBlockNumber; i > latestBlockNumber - numBlocksShowing; i--) {
-      const block = await provider.getBlock(i);
-      blocks.push(block);
-    }
 
-    return blocks;
+   
+     // Obtener el número de bloque más reciente
+     const latestBlockNumber = await provider.getBlockNumber();
+
+     // Calcular el rango de bloques que queremos obtener
+     const desdeBloque = Math.max(0, latestBlockNumber - 350 + 1);
+     const hastaBloque = latestBlockNumber;
+
+     // Obtener los bloques en el rango especificado
+     const bloquesPromesas = [];
+     for (let i = desdeBloque; i <= hastaBloque; i++) {
+         bloquesPromesas.push(provider.getBlock(i));
+     }
+
+     // Esperar a que todas las promesas se resuelvan
+     const bloques = await Promise.all(bloquesPromesas);
+
+     return bloques.filter(bloque => !!bloque); // Filtrar bloques no nulos
   }
 }
