@@ -21,6 +21,7 @@ export function AddNetwork() {
   const [formData, setFormData] = useState(initialData);
   const [isEditMode, setIsEditMode] = useState(false);
   const [existsGenesisFile, setExistsGenesisFile] = useState(false);
+  const [isLoading, setIsLoading] = useState(false); // Estado para gestionar la visibilidad del spinner
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,8 +63,7 @@ export function AddNetwork() {
     };
   
     checkGenesisFile();
-  }, []);
-
+  }, [id]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -79,11 +79,6 @@ export function AddNetwork() {
     alloc[index] = value;
     setFormData({ ...formData, alloc });
   };
-
-  // const addAllocation = () => {
-  //   const alloc = [...formData.alloc, ''];
-  //   setFormData({ ...formData, alloc });
-  // };
 
   const addAllocation = async () => {
     const alloc = [...formData.alloc, ''];
@@ -156,6 +151,7 @@ export function AddNetwork() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true); // Mostrar el spinner al inicio
 
     const minerNodes = formData.nodos.filter(node => node.type === "miner");
     if (minerNodes.length === 0) {
@@ -164,6 +160,7 @@ export function AddNetwork() {
         title: 'Error',
         text: 'There must be at least one node of type MINER!'
       });
+      setIsLoading(false); // Ocultar el spinner en caso de error
       return;
     }
 
@@ -175,19 +172,10 @@ export function AddNetwork() {
           title: 'Error',
           text: 'All RPC nodes must have a port number!'
         });
+        setIsLoading(false); // Ocultar el spinner en caso de error
         return;
       }
     }
-
-    // if (formData.alloc.length === 0) {
-    //   Swal.fire({
-    //     icon: 'error',
-    //     title: 'Error',
-    //     text: 'There must be at least one account Allocation!'
-    //   });
-    //   return;
-    // }
-
     const nodosFiltered = formData.nodos.map(node => ({
       type: node.type,
       name: node.name,
@@ -212,15 +200,16 @@ export function AddNetwork() {
         // modo creación
         response = await axios.post('http://localhost:3000/api/v1/networks', newFormData, { headers });
         
-        if (response.status >= 200 && response.status < 300)
-          response2 = await axios.post(`http://localhost:3000/api/v1/networks/${response.data.id}/addAlloc`, { headers });
-
-        
+        if (response.status >= 200 && response.status < 300) {
+          response2 = await axios.post(`http://localhost:3000/api/v1/networks/${response.data.id}/addAlloc`, {}, { headers });
+        }
       }
       Swal.fire('Success', 'Network saved successfully!', 'success');
       navigate('/list');
     } catch (error) {
       Swal.fire('Error', `Failed to save network: ${error.response?.data?.message || error.message}`, 'error');
+    } finally {
+      setIsLoading(false); // Ocultar el spinner al finalizar
     }
   };
 
@@ -262,7 +251,7 @@ export function AddNetwork() {
                   <button type="button" className="btn btn-danger" onClick={() => removeAllocation(index)} disabled={existsGenesisFile}>X</button>
                 </td>
                 <td>
-                  <input type="text" className="form-control" value={item} onChange={(e) => handleAllocationChange(e, index)} readOnly/>
+                  <input type="text" className="form-control" value={item} onChange={(e) => handleAllocationChange(e, index)} readOnly />
                 </td>
               </tr>
             ))}
@@ -296,13 +285,13 @@ export function AddNetwork() {
                   </select>
                 </td>
                 <td>
-                  <input type="text" className="form-control" name="name" value={node.name} onChange={(e) => handleNodeChange(e, index)} required/>
+                  <input type="text" className="form-control" name="name" value={node.name} onChange={(e) => handleNodeChange(e, index)} required />
                 </td>
                 <td>
-                  <input type="text" className="form-control" name="ip" value={node.ip} onChange={(e) => handleNodeChange(e, index)} required/>
+                  <input type="text" className="form-control" name="ip" value={node.ip} onChange={(e) => handleNodeChange(e, index)} required />
                 </td>
                 <td>
-                  <input type="text" className="form-control" name="port" value={node.port} onChange={(e) => handleNodeChange(e, index)} disabled={node.type === 'miner' || node.type === 'normal'} required={node.type !== 'miner' || node.type !== 'normal'}/>
+                  <input type="text" className="form-control" name="port" value={node.port} onChange={(e) => handleNodeChange(e, index)} disabled={node.type === 'miner' || node.type === 'normal'} required={node.type !== 'miner' || node.type !== 'normal'} />
                 </td>
               </tr>
             ))}
@@ -310,8 +299,10 @@ export function AddNetwork() {
         </table>
         <button type="button" className="btn btn-secondary mb-3 w-25" onClick={addNode}>Add Node</button>
 
-        <br></br>
-        <button type="submit" className="btn btn-primary w-100">Submit</button>
+        <br />
+        <button type="submit" className="btn btn-primary w-100">
+          {isLoading ? 'Loading...' : 'Submit'}
+        </button>
       </form>
     </div>
   );

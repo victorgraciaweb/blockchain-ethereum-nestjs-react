@@ -4,6 +4,7 @@ import { Operations } from './operations';
 import { FaSpinner } from 'react-icons/fa';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import '../index.css'
 
 export function Blocks() {
     const { id } = useParams();
@@ -17,6 +18,7 @@ export function Blocks() {
         const fetchBlocks = async () => {
             try {
                 const response = await axios.get(`http://localhost:3000/api/v1/networks/${id}/blocks`);
+                console.log(`http://localhost:3000/api/v1/networks/${id}/blocks`)
                 const reversedBlocks = response.data.reverse();
                 setBlocks(reversedBlocks);
             } catch (error) {
@@ -41,7 +43,7 @@ export function Blocks() {
                 icon: 'warning',
             });
         } else {
-            navigate(`/blocks/${id}/transactions/${block.number}`);
+            navigate(`/networks/${id}/blocks/${block.number}/transactions`);
         }
     };
 
@@ -60,55 +62,54 @@ export function Blocks() {
     }
 
     if (error) {
+        console.log("ES ESTEEEEE",error)
         return <div>Error: {error}</div>;
     }
 
     const filteredBlocks = showOnlyBlocksWithTransactions ? blocks.filter(block => block.transactions.length > 0) : blocks;
 
     return (
-        <div className="mx-2">
+        <div className="mx-3">
             <Operations />
-            <div className="mt-3">
-                <h3>Blocks</h3>
-                <div className="form-check">
-                    <input type="checkbox" className="form-check-input" id="showOnlyBlocks" checked={showOnlyBlocksWithTransactions} onChange={toggleShowOnlyBlocks} />
+                <h2>Blocks</h2>
+                <input type="checkbox" className="form-check-input" id="showOnlyBlocks" checked={showOnlyBlocksWithTransactions} onChange={toggleShowOnlyBlocks} />
                     <label className="form-check-label" htmlFor="showOnlyBlocks">
                         Show only blocks with transactions
                     </label>
-                </div>
-                {filteredBlocks.length > 0 ? (
-                    <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Number</th>
-                                <th>Hash</th>
-                                <th>Timestamp</th>
-                                <th># Transactions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {filteredBlocks.map((block, index) => (
-                                <tr key={index}>
-                                    <td>
-                                        <button 
-                                            className="btn btn-link p-0" 
-                                            style={{ textDecoration: 'none' }} 
-                                            onClick={() => handleBlockClick(block)}
-                                        >
-                                            {block.number}
-                                        </button>
-                                    </td>
-                                    <td>{block.hash}</td>
-                                    <td>{new Date(block.timestamp * 1000).toLocaleString()}</td>
-                                    <td>{block.transactions.length}</td>
+                <div className="card p-4 shadow">
+                    {filteredBlocks.length > 0 ? (
+                        <table className="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Number</th>
+                                    <th>Hash</th>
+                                    <th>Timestamp</th>
+                                    <th># Transactions</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No blocks found.</p>
-                )}
+                            </thead>
+                            <tbody>
+                                {filteredBlocks.map((block, index) => (
+                                    <tr key={index}>
+                                        <td>
+                                            <button 
+                                                className="btn btn-link p-0" 
+                                                style={{ textDecoration: 'none' }} 
+                                                onClick={() => handleBlockClick(block)}
+                                            >
+                                                {block.number}
+                                            </button>
+                                        </td>
+                                        <td>{block.hash}</td>
+                                        <td>{new Date(block.timestamp * 1000).toLocaleString()}</td>
+                                        <td>{block.transactions.length}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <div className="alert alert-danger" role="alert">No blocks found</div>
+                    )}
+                </div>
             </div>
-        </div>
     );
 }

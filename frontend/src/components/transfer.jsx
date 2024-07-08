@@ -22,7 +22,11 @@ export function Transfer() {
             });
         } else {
             setMetamaskAvailable(false);
-            Swal.fire('Error', 'MetaMask is not installed. Please install it to use this feature.', 'error');
+            Swal.fire({
+                title: 'MetaMask is not available',
+                text: 'Please install MetaMask to use this feature.',
+                icon: 'warning',
+            });
         }
     }, []);
 
@@ -33,34 +37,18 @@ export function Transfer() {
         const toAddress = document.getElementById('to').value;
         const amount = Number(document.getElementById('amount').value);
 
-        console.log("fromAddress",fromAddress)
-        console.log("toAddress",toAddress)
-        console.log("amount",Number(amount).toString(16))
-
-        // if (!ethers.utils.isAddress(fromAddress)) {
-        //     Swal.fire('Error', 'From address is invalid', 'error');
-        //     return;
-        // }
-
-        // if (!ethers.utils.isAddress(toAddress)) {
-        //     Swal.fire('Error', 'To address is invalid', 'error');
-        //     return;
-        // }
-
-        // if (isNaN(amount) || Number(amount) <= 0) {
-        //     Swal.fire('Error', 'Amount must be a positive number', 'error');
-        //     return;
-        // }
+        // console.log("fromAddress",fromAddress)
+        // console.log("toAddress",toAddress)
+        // console.log("amount",Number(amount).toString(16))
 
         try {
             ;
             const txParams = {
                 to: toAddress,
                 from: fromAddress,
-                //value: (ethers.utils.parseUnits(amount.toString(), 'ether')).toHexString(),
                 value:`0x${(Number(amount)*1E18).toString(16)}`
             };
-            console.log("Params", txParams);
+            // console.log("Params", txParams);
 
             // Enviar la transacción
             const tx = await window.ethereum.request({
@@ -75,7 +63,7 @@ export function Transfer() {
     };
 
     return (
-        <div className="mx-2">
+        <div className="mx-3">
             <Operations />
             <h2>Transfer</h2>
             <div className="card p-4 shadow">
@@ -98,10 +86,7 @@ export function Transfer() {
                         </button>
                     </form>
                 ) : (
-                    <div>
-                        <h2>Transfer</h2>
-                        <p>MetaMask is required to use the transfer feature. Please install MetaMask and try again.</p>
-                    </div>
+                    <div class="alert alert-danger" role="alert">MetaMask is required to use the faucet. Please install MetaMask and try again.</div>
                 )}
             </div>
         </div>

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { Operations } from './operations';
 import { FaSpinner } from 'react-icons/fa';
 import axios from 'axios';
+import '../index.css'
 
 export function Transactions() {
     const { id, blockNumber } = useParams();
@@ -13,10 +14,9 @@ export function Transactions() {
     useEffect(() => {
         const fetchTransactions = async () => {
             try {
-                console.log(`http://localhost:3000/api/v1/networks/${id}/blocks/${blockNumber}/transactions/`);
                 const response = await axios.get(`http://localhost:3000/api/v1/networks/${id}/blocks/${blockNumber}/transactions/`);
                 setTransactions(response.data);
-                console.log("data", response.data); // Verifica la estructura de los datos recibidos
+                // console.log("data", response.data); // Verifica la estructura de los datos recibidos
             } catch (error) {
                 setError(error.message);
             } finally {
@@ -26,6 +26,7 @@ export function Transactions() {
 
         fetchTransactions();
     }, [id, blockNumber]);
+
 
     if (loading) {
         return (
@@ -64,7 +65,11 @@ export function Transactions() {
                         <tbody>
                             {transactions.map((transaction, index) => (
                                 <tr key={index}>
-                                    <td>{transaction.hash}</td>
+                                    <td> 
+                                        <Link to={`/networks/${id}/blocks/${blockNumber}/transactions/${transaction.hash}`}>
+                                            {transaction.hash}
+                                        </Link>
+                                    </td>
                                     <td>{transaction.from}</td>
                                     <td>{transaction.to}</td>
                                     <td>{transaction.value/1E18}</td>

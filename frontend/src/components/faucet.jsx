@@ -50,10 +50,10 @@ export function Faucet() {
                     };
 
                     const response = await axios.post(`http://localhost:3000/api/v1/networks/${id}/faucet`, body);
-                    console.log(response.data);
+                    // console.log(response.data);
                     Swal.fire('Success', `Faucet invoked! ${response.data.hash}`, 'success');
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                     Swal.fire('Error', 'Error invoking faucet', error.message, 'error');
                 } finally {
                     setLoading(false);
@@ -79,7 +79,7 @@ export function Faucet() {
     }
 
     return (
-        <div className="mx-2">
+        <div className="mx-3">
             <Operations />
             <h2>Faucet</h2>
             <div className="card p-4 shadow">
@@ -98,10 +98,7 @@ export function Faucet() {
                         </button>
                     </form>
                 ) : (
-                    <div>
-                        <h2>Faucet</h2>
-                        <p>MetaMask is required to use the faucet. Please install MetaMask and try again.</p>
-                    </div>
+                    <div class="alert alert-danger" role="alert">MetaMask is required to use the faucet. Please install MetaMask and try again.</div>
                 )}
             </div>
         </div>

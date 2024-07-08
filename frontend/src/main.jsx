@@ -14,6 +14,7 @@ import { Down } from './components/down';
 import { Restart } from './components/restart';
 import { Blocks } from './components/block';
 import {Transactions} from './components/transactions'
+import {TransactionsHash} from './components/transactions_hash'
 
 
 
@@ -33,7 +34,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/down/:id" element={<Down />} />
           <Route path="/restart/:id" element={<Restart />} />
           <Route path="/blocks/:id" element={<Blocks />} />
-          <Route path="/blocks/:id/transactions/:blockNumber" element={<Transactions />} />
+          <Route path="/networks/:id/blocks/:blockNumber/transactions" element={<Transactions />} />
+          <Route path="/networks/:id/blocks/:blockNumber/transactions/:transactionHash" element={<TransactionsHash />} />
       </Routes>
     </BrowserRouter>
 );
