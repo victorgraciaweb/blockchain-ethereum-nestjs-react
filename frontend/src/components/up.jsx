@@ -3,11 +3,13 @@ import { Header } from './header';
 import { Link, useParams } from 'react-router-dom'
 import { Operations } from './operations';
 import axios from 'axios';
+import '../index.css';
 
 export function Up() {
     const { id } = useParams();
     const [result, setResult] = useState(null);
     const [isAlive, setIsAlive] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const checkIsAlive = async () => {
@@ -23,17 +25,16 @@ export function Up() {
         // Check isAlive immediately
         checkIsAlive();
 
-        // Check isAlive periodically every 5 seconds
-        const intervalId = setInterval(checkIsAlive, 5000);
-        console.log(isAlive)
-        // Cleanup interval on component unmount
-        return () => clearInterval(intervalId);
     }, [id]);
 
     const handleClick = async () => {
         try {
             const response = await axios.post(`http://localhost:3000/api/v1/networks/${id}/up`);
             setResult(response.data);
+            console.log(response.data)
+            // if (response.data.success) {
+            //     window.location.reload(); // Forzar recarga de la página
+            // }
         } catch (error) {
             console.error(error);
             setResult({ success: false, error: error.message });
@@ -46,12 +47,14 @@ export function Up() {
             <button onClick={handleClick} className="btn btn-success w-100">
                 <i className="bi bi-arrow-up-circle-fill"></i> Submit Network Up
             </button>
-            {result && result.success ? (
-                <p>Network up successfully!</p>
-            ) : (
-                <p>Error updating network: {result?.error}</p>
-            )}
+
             <p>Network is {isAlive ? 'alive' : 'not alive'}</p>
         </div>
     );
 }
+
+// {result && result.success ? (
+//     <p>Network up successfully!</p>
+// ) : (
+//     <p>Error updating network: {result?.error}</p>
+// )}

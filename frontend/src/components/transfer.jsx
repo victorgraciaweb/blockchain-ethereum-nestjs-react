@@ -5,14 +5,11 @@ import Swal from 'sweetalert2';
 import { ethers } from 'ethers';
 
 export function Transfer() {
-    console.log('Ethers:', ethers);
     const { id } = useParams();
-    console.log(id);
     const [account, setAccount] = useState('');
     const [metamaskAvailable, setMetamaskAvailable] = useState(true);
 
     useEffect(() => {
-        console.log(typeof window.ethereum);
         if (typeof window.ethereum !== 'undefined') {
             window.ethereum.request({
                 method: 'eth_requestAccounts'
@@ -32,26 +29,47 @@ export function Transfer() {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+
         const fromAddress = document.getElementById('from').value;
         const toAddress = document.getElementById('to').value;
-        const amount = document.getElementById('amount').value;
-        console.log(toAddress);
-        console.log(amount);
+        const amount = Number(document.getElementById('amount').value);
 
-        const weiAmount = ethers.utils.parseUnits(amount.toString(), 'ether');
-        const txParams = {
-            to: toAddress,
-            from: fromAddress,
-            value: weiAmount._hex
-        };
-        console.log(txParams);
+        console.log("fromAddress",fromAddress)
+        console.log("toAddress",toAddress)
+        console.log("amount",Number(amount).toString(16))
+
+        // if (!ethers.utils.isAddress(fromAddress)) {
+        //     Swal.fire('Error', 'From address is invalid', 'error');
+        //     return;
+        // }
+
+        // if (!ethers.utils.isAddress(toAddress)) {
+        //     Swal.fire('Error', 'To address is invalid', 'error');
+        //     return;
+        // }
+
+        // if (isNaN(amount) || Number(amount) <= 0) {
+        //     Swal.fire('Error', 'Amount must be a positive number', 'error');
+        //     return;
+        // }
 
         try {
-            const tx = await ethereum.request({
-                method: "eth_sendTransaction",
-                params: [txParams]
+            ;
+            const txParams = {
+                to: toAddress,
+                from: fromAddress,
+                //value: (ethers.utils.parseUnits(amount.toString(), 'ether')).toHexString(),
+                value:`0x${(Number(amount)*1E18).toString(16)}`
+            };
+            console.log("Params", txParams);
+
+            // Enviar la transacción
+            const tx = await window.ethereum.request({
+                method: 'eth_sendTransaction',
+                params: [txParams],
             });
-            Swal.fire('Success', `Transaction sent: ${tx.hash}`, 'success');
+   
+            Swal.fire('Success', `Transaction sent: ${tx}`, 'success');
         } catch (error) {
             Swal.fire('Error', `Transaction failed: ${error.message}`, 'error');
         }
