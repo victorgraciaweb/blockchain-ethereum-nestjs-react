@@ -4,7 +4,7 @@ import { Operations } from './operations';
 import { FaSpinner } from 'react-icons/fa';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import '../index.css'
+import {IsLoading} from './loading'
 
 export function Blocks() {
     const { id } = useParams();
@@ -47,18 +47,11 @@ export function Blocks() {
         }
     };
 
-    if (loading) {
+    if (loading){
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <FaSpinner className="spinner" style={{ fontSize: '3rem', animation: 'spin 1s linear infinite' }} />
-                <style>{`
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                `}</style>
-            </div>
+            <IsLoading/>
         );
+
     }
 
     if (error) {

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Operations } from './operations';
 import { FaSpinner } from 'react-icons/fa';
 import axios from 'axios';
+import {IsLoading} from './loading'
 
 export function Restart() {
     const { id } = useParams();
@@ -38,15 +39,7 @@ export function Restart() {
     };
     if (isLoading){
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <FaSpinner className="spinner" style={{ fontSize: '3rem', animation: 'spin 1s linear infinite' }} />
-                <style>{`
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                `}</style>
-            </div>
+            <IsLoading/>
         );
 
     }

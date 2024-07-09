@@ -3,6 +3,7 @@ import { Operations } from './operations';
 import { FaSpinner } from 'react-icons/fa';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import {IsLoading} from './loading'
 import '../index.css';
 
 export function TransactionsHash() {
@@ -28,15 +29,7 @@ export function TransactionsHash() {
 
     if (loading) {
         return (
-            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <FaSpinner className="spinner" style={{ fontSize: '3rem', animation: 'spin 1s linear infinite' }} />
-                <style>{`
-                    @keyframes spin {
-                        0% { transform: rotate(0deg); }
-                        100% { transform: rotate(360deg); }
-                    }
-                `}</style>
-            </div>
+            <IsLoading/>
         );
     }
 
@@ -45,7 +38,9 @@ export function TransactionsHash() {
     }
 
     // Crear filas de la tabla para cada propiedad del objeto data
-    const tableRows = Object.keys(data).map((key) => (
+    const tableRows = Object.keys(data)
+    .filter(key => key !== "signature") // Filtramos las keys que no sean iguales a signature
+    .map((key) => (
         <tr key={key}>
             <td>{key}</td>
             <td>{typeof data[key] === 'object' ? JSON.stringify(data[key]) : data[key]}</td>
