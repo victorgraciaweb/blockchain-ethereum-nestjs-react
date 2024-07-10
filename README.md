@@ -12,7 +12,7 @@ DApp desarrollada con Tecnología Ethereum Blockchain, Backend con NestJS y Frot
 
 ## Links
 
-Visita el README.m correspondiente a cada proyecto
+Visita el README.md correspondiente a cada proyecto
 
 - [Frontend](https://github.com/victorgraciaweb/blockchain-ethereum-nestjs-react/blob/develop/frontend/README.md)
 - [Backend](https://github.com/victorgraciaweb/blockchain-ethereum-nestjs-react/blob/develop/backend/README.md)
