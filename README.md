@@ -1,16 +1,18 @@
 # Blockchain-ethereum-nestjs-react
 
-DApp developed in Ethereum Blockchain, Backend with NestJS and Frotend React
+DApp desarrollada con Tecnología Ethereum Blockchain, Backend con NestJS y Frotend con React
 
-## Video de YouTube
+## ¿Cóm puedo crear Redes Privadas con el proyecto?
 
-<p align="center">
-  <iframe width="100%" height="400" src="https://www.youtube.com/embed/s-d5qIJYuNI?si=4HncxCDbdkhapIY8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-</p>
+<div style="width: 100%; text-align: center;">
+  <a href="https://www.youtube.com/watch?v=s-d5qIJYuNI" target="_blank">
+    <img src="./blockchain/assets/ethereum.jpeg" alt="Video de Ejemplo" style="width: 100%; max-width: 800px;">
+  </a>
+</div>
 
 ## Links
 
-You can visit Frontend and Backend projects README.md:
+Visita el README.m correspondiente a cada proyecto
 
 - [Frontend](https://github.com/victorgraciaweb/blockchain-ethereum-nestjs-react/blob/develop/frontend/README.md)
 - [Backend](https://github.com/victorgraciaweb/blockchain-ethereum-nestjs-react/blob/develop/backend/README.md)

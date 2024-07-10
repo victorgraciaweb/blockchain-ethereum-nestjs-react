@@ -12,9 +12,6 @@ export class BlocksService {
     const port = network.nodos.find(i => i.type == 'rpc').port
 
     const provider = new ethers.JsonRpcProvider(`http://localhost:${port}`);
-
-
-
    
      // Obtener el número de bloque más reciente
      const latestBlockNumber = await provider.getBlockNumber();
