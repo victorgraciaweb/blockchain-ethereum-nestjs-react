@@ -2,7 +2,7 @@
 
 DApp desarrollada con Tecnología Ethereum Blockchain, Backend con NestJS y Frotend con React
 
-## ¿Cóm puedo crear Redes Privadas con el proyecto?
+## ¿Cómo puedo crear Redes Privadas con el proyecto?
 
 <div style="width: 100%; text-align: center;">
   <a href="https://www.youtube.com/watch?v=s-d5qIJYuNI" target="_blank">
