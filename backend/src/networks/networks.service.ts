@@ -11,6 +11,7 @@ import { DockerService } from 'src/docker/docker.service';
 import { PassThrough } from 'stream';
 import { ethers, TransactionResponse } from 'ethers';
 import { CreateFaucetDto } from './dto/create-faucet.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class NetworksService {
@@ -18,9 +19,13 @@ export class NetworksService {
   private readonly filePath: string;
   private readonly networksPath: string;
 
-  constructor(private fileService: FileService, private dockerService: DockerService) {
-    this.filePath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks.json');
-    this.networksPath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks');
+  constructor(
+    private fileService: FileService, 
+    private dockerService: DockerService,     
+    private readonly configService: ConfigService
+  ) {
+    this.filePath = path.join(__dirname, configService.get<string>('networksJsonPathFile'));
+    this.networksPath = path.join(__dirname, configService.get<string>('networksJsonPathFolder'));
   }
 
   async create(createNetworkDto: CreateNetworkDto): Promise<Network> {
@@ -168,7 +173,7 @@ export class NetworksService {
       const originalConsoleLog = console.log;
       console.log = () => {};
 
-      const provider = new ethers.JsonRpcProvider(`http://localhost:${port}`);
+      const provider = new ethers.JsonRpcProvider(`${this.configService.get<string>('rpcProviderEnvironment')}:${port}`);
       const blockNumber = await provider.getBlockNumber();
 
       // Restore console logs
@@ -255,7 +260,7 @@ export class NetworksService {
       const port = network.nodos.find(i => i.type == 'rpc').port;
 
       // Create provider and signer
-      const provider = new ethers.JsonRpcProvider(`http://localhost:${port}`);
+      const provider = new ethers.JsonRpcProvider(`${this.configService.get<string>('rpcProviderEnvironment')}:${port}`);
       const json = fs.readFileSync(path.join(pathNetwork, 'keystore', files[0])).toString();
       const wallet = await ethers.Wallet.fromEncryptedJson(json, password);
       const signer = wallet.connect(provider);

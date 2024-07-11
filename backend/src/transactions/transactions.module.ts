@@ -5,6 +5,7 @@ import { TransactionsService } from './transactions.service';
 import { BlocksService } from './blocks.service';
 import { NetworksService } from 'src/networks/networks.service';
 import { NetworksModule } from 'src/networks/networks.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
     controllers: [
@@ -15,6 +16,9 @@ import { NetworksModule } from 'src/networks/networks.module';
         TransactionsService, 
         BlocksService
     ],
-    imports: [NetworksModule],
+    imports: [
+        ConfigModule,
+        NetworksModule
+    ],
 })
 export class TransactionsModule {}

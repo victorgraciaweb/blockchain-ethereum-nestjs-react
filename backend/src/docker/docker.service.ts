@@ -9,6 +9,7 @@ import { promisify } from 'util';
 import * as yaml from 'js-yaml';
 import { NetworksService } from 'src/networks/networks.service';
 import { CreateNetworkDto } from 'src/networks/dto/create-network.dto';
+import { ConfigService } from '@nestjs/config';
 
 
 @Injectable()
@@ -17,10 +18,13 @@ export class DockerService {
     private readonly networksPath: string;
     private readonly dataPath: string;
 
-    constructor(private readonly fileService: FileService) {
-        this.networksPath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks');
-        this.dataPath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos');
-        this.filePath = path.join(__dirname, '..', '..', '..', 'blockchain', 'datos', 'networks.json');
+    constructor(
+        private readonly fileService: FileService,
+        private readonly configService: ConfigService
+    ) {
+        this.filePath = path.join(__dirname, configService.get<string>('networksJsonPathFile'));
+        this.networksPath = path.join(__dirname, configService.get<string>('networksJsonPathFolder'));
+        this.dataPath = path.join(__dirname, configService.get<string>('networksDataPath'));
     }
 
     async createGenesis(network: any, networkPath: string): Promise<Genesis> {

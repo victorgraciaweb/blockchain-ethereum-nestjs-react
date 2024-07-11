@@ -5,7 +5,7 @@
 # Ejecutar en desarrollo
 
 1. Clonar el repositorio
-2. Ejecutar
+2. instalar dependencias
 ```
 yarn install
 ```
@@ -14,12 +14,20 @@ yarn install
 npm i -g @nestjs/cli
 ```
 
-7. Ejecutar la aplicación en dev:
+4. Hacer copia de fichero ```.env```
+```
+cp .env.template .env
+```
+
+5. Configurar las variables de entorno en el fichero ```.env```
+
+6. Ejecutar la aplicación en dev:
 ```
 yarn start:dev
 ```
-8. Importar colección con Endpoints en Postman (Opcional) 
-- `blockchain.postman_collection.json`
+
+7. Importar colección con Endpoints en Postman (Opcional) 
+- ```blockchain.postman_collection.json```
 
 ## Stack usado
 * Nest
